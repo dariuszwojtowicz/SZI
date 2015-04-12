@@ -15,11 +15,13 @@
             this.Waiter = new Waiter();
             this.SayHelloCommand = new RelayCommand(this.SayHello);
             this.StartWaiterWorkCommand = new RelayCommand(this.StartWork);
+            this.StopWaiterWorkCommand = new RelayCommand(this.StopWork);
             this.AddOrderCommand = new RelayCommand(this.AddOrder);
         }
 
         public RelayCommand SayHelloCommand { get; set; }
         public RelayCommand StartWaiterWorkCommand { get; set; }
+        public RelayCommand StopWaiterWorkCommand { get; set; }
         public RelayCommand AddOrderCommand { get; set; }
 
         public string WaiterName
@@ -58,6 +60,11 @@
         private void StartWork()
         {
             this.Waiter.StartWork();
+        }
+
+        private void StopWork()
+        {
+            this.Waiter.StopWork();
         }
 
         private void AddOrder()

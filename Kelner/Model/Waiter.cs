@@ -9,20 +9,37 @@
     {
         private Kitchen kitchen;
 
+        private ClientsQueue clientsQueue;
+
         private int mealsOnKitchen;
 
         private int orders;
+
+        private int clientsQueueCount;
 
         public Waiter()
         {
             this.MealsOnKitchen = 0;
             this.kitchen = new Kitchen();
             this.kitchen.NewMealEvent += this.OnNewMealFromKitchen;
+
+            this.clientsQueue = new ClientsQueue();
+            this.clientsQueue.NewClientEvent += this.OnNewClientCome;
         }
 
         public void StartWork()
         {
             this.kitchen.Start();
+            this.clientsQueue.Start();
+        }
+
+        public void StopWork()
+        {
+            this.kitchen.Stop();
+            this.clientsQueue.Stop();
+            this.Orders = 0;
+            this.MealsOnKitchen = 0;
+            this.ClientsQueueCount = 0;
         }
 
         public int MealsOnKitchen
@@ -63,9 +80,37 @@
             }
         }
 
+        public int ClientsQueueCount
+        {
+            get
+            {
+                return this.clientsQueueCount;
+            }
+
+            set
+            {
+                this.clientsQueueCount = value;
+                this.RaisePropertyChanged("ClientsQueue");
+                this.RaisePropertyChanged("InformationAboutClients");
+            }
+        }
+
+        public string InformationAboutClients
+        {
+            get
+            {
+                return string.Format("Klienci w kolejce: {0}", this.ClientsQueueCount);
+            }
+        }
+
         private void OnNewMealFromKitchen(object sender, NewMealEventArgs eventArgs)
         {
             this.MealsOnKitchen += eventArgs.MealCount;
+        }
+
+        private void OnNewClientCome(object sender, NewClientEventArgs eventArgs)
+        {
+            this.ClientsQueueCount += eventArgs.ClientCount;
         }
     }
 }

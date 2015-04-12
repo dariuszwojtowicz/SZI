@@ -2,13 +2,13 @@
 {
     using System.Threading;
 
-    public class Kitchen
+    public class ClientsQueue
     {
         private Thread thread;
 
         private bool shouldStop;
 
-        public Kitchen()
+        public ClientsQueue()
         {
             this.thread = new Thread(this.WorkerFunc);
         }
@@ -27,37 +27,34 @@
             this.thread.Join();
         }
 
-        public event NewMealEventHandler NewMealEvent;
+        public event NewClientEventHandler NewClientEvent;
 
-        protected virtual void OnNewMealAppeared(NewMealEventArgs e)
+        protected virtual void OnNewClientAppeared(NewClientEventArgs e)
         {
-            this.NewMealEvent(this, e);
+            this.NewClientEvent(this, e);
         }
 
         private void WorkerFunc()
         {
-            var i = 0;
             while (!this.shouldStop)
             {
-                i++;
                 Thread.Sleep(1000);
-                NewMealEventArgs e = new NewMealEventArgs(i);
-                this.OnNewMealAppeared(e);
-                
+                NewClientEventArgs e = new NewClientEventArgs(2);
+                this.OnNewClientAppeared(e);
+
             }
         }
     }
 
-    public delegate void NewMealEventHandler(object sender, NewMealEventArgs e);
+    public delegate void NewClientEventHandler(object sender, NewClientEventArgs e);
 
-    public class NewMealEventArgs
+    public class NewClientEventArgs
     {
-        public int MealCount { get; set; }
+        public int ClientCount { get; set; }
 
-        public NewMealEventArgs(int i)
+        public NewClientEventArgs(int i)
         {
-            this.MealCount = i;
+            this.ClientCount = i;
         }
     }
 }
-

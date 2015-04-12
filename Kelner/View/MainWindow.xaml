@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
         
         <StackPanel Grid.Column="0" Background="LightGray">
-            <TextBlock Text="Aktualne dane:       " FontSize="16"/>
+            <TextBlock Text=" Kuchnia:" FontSize="16"/>
             <TextBlock Text="{Binding Waiter.InformationAboutKitchen}" FontSize="14"/>
         </StackPanel>
 
@@ -31,13 +31,14 @@
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Przedstaw się" Command="{Binding SayHelloCommand}" Margin="5"/>
                 <Button Content="Start" Command="{Binding StartWaiterWorkCommand}" Margin="5"/>
+                <Button Content="Stop" Command="{Binding StopWaiterWorkCommand}" Margin="5"/>
                 <Button Content="Złóż zamówienie" Command="{Binding AddOrderCommand}" Margin="5"/>
             </StackPanel>
         </Grid>
 
         <StackPanel Grid.Column="2" Background="LightGray">
-            <TextBlock Text="  Jakieś inne dane:" FontSize="16"/>
-            <TextBlock Text="  - Inne dane 18" FontSize="14"/>
+            <TextBlock Text=" Klienci:" FontSize="16"/>
+            <TextBlock Text="{Binding Waiter.InformationAboutClients}" FontSize="14"/>
         </StackPanel>
 
     </Grid>
