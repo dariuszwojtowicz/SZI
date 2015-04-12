@@ -1,22 +1,26 @@
 ﻿namespace Kelner.ViewModel
 {
+    using Kelner.Model;
+
     public class MainWindowViewModel : ViewModelBase
     {
         private string waiterName;
 
         private string firstSectionData;
 
-        private int someNumber;
+        private Waiter waiter;
 
         public MainWindowViewModel()
         {
-            this.someNumber = 1;
+            this.Waiter = new Waiter();
             this.SayHelloCommand = new RelayCommand(this.SayHello);
-            this.RefreshDataCommand = new RelayCommand(this.RefreshFirstSectionData);
+            this.StartWaiterWorkCommand = new RelayCommand(this.StartWork);
+            this.AddOrderCommand = new RelayCommand(this.AddOrder);
         }
 
         public RelayCommand SayHelloCommand { get; set; }
-        public RelayCommand RefreshDataCommand { get; set; }
+        public RelayCommand StartWaiterWorkCommand { get; set; }
+        public RelayCommand AddOrderCommand { get; set; }
 
         public string WaiterName
         {
@@ -32,11 +36,17 @@
             }
         }
 
-        public string FirstSectionData
+        public Waiter Waiter
         {
             get
             {
-                return string.Format(" - Jakieś tam dane: {0}", this.someNumber);
+                return this.waiter;
+            }
+
+            set
+            {
+                this.waiter = value;
+                this.RaisePropertyChanged("Waiter");
             }
         }
 
@@ -45,10 +55,14 @@
             this.WaiterName = "Siema, jestem Zenek Bębenek";
         }
 
-        private void RefreshFirstSectionData()
+        private void StartWork()
         {
-            this.someNumber++;
-            this.RaisePropertyChanged("FirstSectionData");
+            this.Waiter.StartWork();
+        }
+
+        private void AddOrder()
+        {
+            this.Waiter.Orders++;
         }
     }
 }
