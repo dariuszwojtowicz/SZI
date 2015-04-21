@@ -27,7 +27,24 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <TextBlock Text="{Binding WaiterName}" FontSize="18" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ItemsControl ItemsSource="{Binding Sections}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background="Aquamarine" Width="250" Height="250"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Fill="Brown" Width="25" Height="25"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                      <Setter Property="Canvas.Top" Value="{Binding Path=X}"/>
+                        <Setter Property="Canvas.Left" Value="{Binding Path=Y}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Przedstaw się" Command="{Binding SayHelloCommand}" Margin="5"/>
                 <Button Content="Start" Command="{Binding StartWaiterWorkCommand}" Margin="5"/>

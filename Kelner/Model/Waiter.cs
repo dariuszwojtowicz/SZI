@@ -5,9 +5,11 @@
     /// <summary>
     /// Klasa reprezentująca obiekt Kelnera, która będzie zbierać informacje o tym co się dzieje w restauracji
     /// </summary>
-    public class Waiter : ViewModelBase
+    public class WaiterWorker : ViewModelBase
     {
-        private Kitchen kitchen;
+        // todo: metoda QuoVadis :)
+
+        private KitchenWorker kitchenWorker;
 
         private ClientsQueue clientsQueue;
 
@@ -17,11 +19,11 @@
 
         private int clientsQueueCount;
 
-        public Waiter()
+        public WaiterWorker()
         {
             this.MealsOnKitchen = 0;
-            this.kitchen = new Kitchen();
-            this.kitchen.NewMealEvent += this.OnNewMealFromKitchen;
+            this.kitchenWorker = new KitchenWorker();
+            this.kitchenWorker.NewMealEvent += this.OnNewMealFromKitchenWorker;
 
             this.clientsQueue = new ClientsQueue();
             this.clientsQueue.NewClientEvent += this.OnNewClientCome;
@@ -29,13 +31,13 @@
 
         public void StartWork()
         {
-            this.kitchen.Start();
+            this.kitchenWorker.Start();
             this.clientsQueue.Start();
         }
 
         public void StopWork()
         {
-            this.kitchen.Stop();
+            this.kitchenWorker.Stop();
             this.clientsQueue.Stop();
             this.Orders = 0;
             this.MealsOnKitchen = 0;
@@ -56,6 +58,8 @@
                 this.RaisePropertyChanged("InformationAboutKitchen");
             }
         }
+
+        public Section[][] RestaurantSections { get; set; }
 
         public int Orders
         {
@@ -95,6 +99,19 @@
             }
         }
 
+        public int PositionX { get; set; }
+        public int PositionY { get; set; }
+
+        public Direction WaiterDirection { get; set; }
+
+        public enum Direction
+        {
+            North,
+            South,
+            East,
+            West
+        }
+
         public string InformationAboutClients
         {
             get
@@ -103,7 +120,7 @@
             }
         }
 
-        private void OnNewMealFromKitchen(object sender, NewMealEventArgs eventArgs)
+        private void OnNewMealFromKitchenWorker(object sender, NewMealEventArgs eventArgs)
         {
             this.MealsOnKitchen += eventArgs.MealCount;
         }

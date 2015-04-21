@@ -57,4 +57,6 @@
             this.ClientCount = i;
         }
     }
+    
+    //todo generowanie klientów
 }

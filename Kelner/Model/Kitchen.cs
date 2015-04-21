@@ -2,13 +2,13 @@
 {
     using System.Threading;
 
-    public class Kitchen
+    public class KitchenWorker
     {
         private Thread thread;
 
         private bool shouldStop;
 
-        public Kitchen()
+        public KitchenWorker()
         {
             this.thread = new Thread(this.WorkerFunc);
         }
