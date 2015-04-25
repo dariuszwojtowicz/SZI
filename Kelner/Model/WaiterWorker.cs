@@ -16,6 +16,8 @@
 
         private ClientsQueueWorker clientsQueueWorker;
 
+        private TableWorker tableWorker;
+
         private int mealsOnKitchen;
 
         private int doneOrdersOnKitchen;
@@ -25,6 +27,8 @@
         private List<Order> writtenOrders;
 
         private List<Order> doneOrdersOnHands;
+
+        private int ordersOnTables;
 
         public WaiterWorker()
         {
@@ -36,6 +40,10 @@
 
             this.clientsQueueWorker = new ClientsQueueWorker();
             this.clientsQueueWorker.NewClientEvent += this.OnNewClientCome;
+
+            this.tableWorker = new TableWorker();
+            this.tableWorker.ClientOutEvent += this.OnClientOut;
+            this.tableWorker.NewTableOrderEvent += this.OnNewTableOrder;
         }
 
         public Section[][] RestaurantSections { get; set; }
@@ -46,12 +54,14 @@
             this.DoneOrdersOnHands = new List<Order>();
             this.kitchenWorker.Start();
             this.clientsQueueWorker.Start();
+            this.tableWorker.Start();
         }
 
         public void StopWork()
         {
             this.kitchenWorker.Stop();
             this.clientsQueueWorker.Stop();
+            this.tableWorker.Stop();
             this.DoneOrdersOnKitchen = 0;
             this.OrdersIsProgressOnKitchen = 0;
             this.ClientsQueueCount = 0;
@@ -86,6 +96,7 @@
         public void GiveOrdersToClients()
         {
             this.DoneOrdersOnHands = new List<Order>();
+            this.tableWorker.Order.OrderState = Order.State.Done;
         }
 
         public void GetClientFromQueue()
@@ -95,7 +106,15 @@
             {
                 this.clientsQueueWorker.WaitingClients.Remove(client);
                 this.ClientsQueueCount--;
+                this.tableWorker.IsFree = false;
+                this.RefreshInformations();
             }
+        }
+
+        public void CleanTable()
+        {
+            this.tableWorker.IsDirty = false;
+            this.RefreshInformations();
         }
 
         /// <summary>
@@ -188,11 +207,39 @@
             }
         }
 
+        public int OrdersOnTables
+        {
+            get
+            {
+                return this.ordersOnTables;
+            }
+
+            set
+            {
+                this.ordersOnTables = value;
+                this.RaisePropertyChanged("OrdersOnTables");
+                this.RaisePropertyChanged("InformationAboutTable");
+            }
+        }
+
+        public string InformationAboutTable
+        {
+            get
+            {
+                return string.Format(
+                    "Zamówienie: {0}\nWolny: {1}\nBrudny: {2}",
+                    this.OrdersOnTables,
+                    this.tableWorker.IsFree,
+                    this.tableWorker.IsDirty);
+            }
+        }
+
         public void RefreshInformations()
         {
             this.RaisePropertyChanged("InformationAboutWaiter");
             this.RaisePropertyChanged("InformationAboutKitchen");
             this.RaisePropertyChanged("InformationAboutClients");
+            this.RaisePropertyChanged("InformationAboutTable");
         }
 
 
@@ -243,6 +290,17 @@
         {
             this.ClientsQueueCount = eventArgs.ClientCount;
             this.RefreshInformations();
+        }
+
+        private void OnClientOut(object sender, ClientOutEventArgs e)
+        {
+            this.OrdersOnTables--;
+            this.RefreshInformations();
+        }
+
+        private void OnNewTableOrder(object sender, NewTableOrderEventArgs e)
+        {
+            this.OrdersOnTables++;
         }
     }
 }

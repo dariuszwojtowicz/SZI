@@ -24,6 +24,8 @@
         <StackPanel Grid.Column="0" Grid.Row="0" Background="LightGray">
             <TextBlock Text=" Kuchnia:" FontSize="16"/>
             <TextBlock Text="{Binding Waiter.InformationAboutKitchen}" FontSize="14"/>
+            <TextBlock Text=" Stolik:" FontSize="16"/>
+            <TextBlock Text="{Binding Waiter.InformationAboutTable}" FontSize="14"/>
         </StackPanel>
 
         <Grid Grid.Column="1" Grid.Row="0">
@@ -67,7 +69,7 @@
                     <Button Content="Start" Command="{Binding StartWaiterWorkCommand}" Margin="5"/>
                     <Button Content="Stop" Command="{Binding StopWaiterWorkCommand}" Margin="5"/>
                     <Button Content="Przyjmij klientów" Command="{Binding GetClientFromQueueCommand}" Margin="5"/>
-                    
+                    <Button Content="Wyczyść stół" Command="{Binding CleanTableCommand}" Margin="5"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

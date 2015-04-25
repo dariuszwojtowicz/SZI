@@ -24,6 +24,7 @@
             this.TakeOrderFromKitchenCommand = new RelayCommand(this.TakeOrderFromKitchen);
             this.GiveOrdersToClientsCommand = new RelayCommand(this.GiveOrdersToClients);
             this.GetClientFromQueueCommand = new RelayCommand(this.GetClientFromQueue);
+            this.CleanTableCommand = new RelayCommand(this.CleanTable);
         }
 
         public RelayCommand StartWaiterWorkCommand { get; set; }
@@ -39,6 +40,8 @@
         public RelayCommand GiveOrdersToClientsCommand { get; set; }
 
         public RelayCommand GetClientFromQueueCommand { get; set; }
+
+        public RelayCommand CleanTableCommand { get; set; }
 
         public ObservableCollection<Section> Sections
         {
@@ -109,6 +112,11 @@
         private void GetClientFromQueue()
         {
             this.Waiter.GetClientFromQueue();
+        }
+
+        private void CleanTable()
+        {
+            this.Waiter.CleanTable();
         }
 
         //private void CreateSections()
