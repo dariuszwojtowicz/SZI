@@ -14,7 +14,7 @@
 
         private KitchenWorker kitchenWorker;
 
-        private ClientsQueue clientsQueue;
+        private ClientsQueueWorker clientsQueueWorker;
 
         private int mealsOnKitchen;
 
@@ -34,8 +34,8 @@
             this.kitchenWorker = new KitchenWorker();
             this.kitchenWorker.NewMealEvent += this.OnNewMealFromKitchenWorker;
 
-            this.clientsQueue = new ClientsQueue();
-            this.clientsQueue.NewClientEvent += this.OnNewClientCome;
+            this.clientsQueueWorker = new ClientsQueueWorker();
+            this.clientsQueueWorker.NewClientEvent += this.OnNewClientCome;
         }
 
         public Section[][] RestaurantSections { get; set; }
@@ -45,13 +45,13 @@
             this.WrittenOrders = new List<Order>();
             this.DoneOrdersOnHands = new List<Order>();
             this.kitchenWorker.Start();
-            this.clientsQueue.Start();
+            this.clientsQueueWorker.Start();
         }
 
         public void StopWork()
         {
             this.kitchenWorker.Stop();
-            this.clientsQueue.Stop();
+            this.clientsQueueWorker.Stop();
             this.DoneOrdersOnKitchen = 0;
             this.OrdersIsProgressOnKitchen = 0;
             this.ClientsQueueCount = 0;
@@ -80,9 +80,22 @@
             }
         }
 
+        /// <summary>
+        /// Wydaj wszystkie zamówienia na stoliki
+        /// </summary>
         public void GiveOrdersToClients()
         {
             this.DoneOrdersOnHands = new List<Order>();
+        }
+
+        public void GetClientFromQueue()
+        {
+            var client = this.clientsQueueWorker.WaitingClients.FirstOrDefault();
+            if (client != null)
+            {
+                this.clientsQueueWorker.WaitingClients.Remove(client);
+                this.ClientsQueueCount--;
+            }
         }
 
         /// <summary>
@@ -228,7 +241,7 @@
 
         private void OnNewClientCome(object sender, NewClientEventArgs eventArgs)
         {
-            this.ClientsQueueCount += eventArgs.ClientCount;
+            this.ClientsQueueCount = eventArgs.ClientCount;
             this.RefreshInformations();
         }
     }

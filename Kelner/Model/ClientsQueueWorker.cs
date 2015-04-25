@@ -1,21 +1,27 @@
 ﻿namespace Kelner.Model
 {
+    using System.Collections.Generic;
     using System.Threading;
 
-    public class ClientsQueue
+    /// <summary>
+    /// Klasa reprezentująca kolejkę przychodzących klientów
+    /// </summary>
+    public class ClientsQueueWorker
     {
         private Thread thread;
 
         private bool shouldStop;
 
-        public ClientsQueue()
+        public ClientsQueueWorker()
         {
-            this.thread = new Thread(this.WorkerFunc);
+            this.thread = new Thread(this.ClientsWorkerFunc);
+            this.WaitingClients = new List<Client>();
         }
 
         public void Start()
         {
-            this.thread = new Thread(this.WorkerFunc);
+            this.WaitingClients = new List<Client>();
+            this.thread = new Thread(this.ClientsWorkerFunc);
             this.shouldStop = false;
             this.thread.Start();
         }
@@ -27,6 +33,8 @@
             this.thread.Join();
         }
 
+        public List<Client> WaitingClients { get; set; }
+
         public event NewClientEventHandler NewClientEvent;
 
         protected virtual void OnNewClientAppeared(NewClientEventArgs e)
@@ -34,12 +42,19 @@
             this.NewClientEvent(this, e);
         }
 
-        private void WorkerFunc()
+        private void ClientsWorkerFunc()
         {
             while (!this.shouldStop)
             {
                 Thread.Sleep(1000);
-                NewClientEventArgs e = new NewClientEventArgs(2);
+
+                var newClient = new Client
+                {
+                    CanSplit = false,
+                    PeopleCount = 2
+                };
+                this.WaitingClients.Add(newClient);
+                NewClientEventArgs e = new NewClientEventArgs(this.WaitingClients.Count);
                 this.OnNewClientAppeared(e);
 
             }
@@ -57,6 +72,4 @@
             this.ClientCount = i;
         }
     }
-    
-    //todo generowanie klientów
 }

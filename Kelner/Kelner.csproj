@@ -63,7 +63,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\Client.cs" />
-    <Compile Include="Model\ClientsQueue.cs" />
+    <Compile Include="Model\ClientsQueueWorker.cs" />
     <Compile Include="Model\KitchenWorker.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\Section.cs" />

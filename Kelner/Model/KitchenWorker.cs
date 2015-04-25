@@ -1,6 +1,8 @@
 ﻿namespace Kelner.Model
 {
+    using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
 
@@ -66,20 +68,27 @@
         {
             while (!this.shouldStop)
             {
-                if (this.OrdersInProgress.Any())
+                try
                 {
-                    Thread.Sleep(1000);
-                    var doneOrder = this.OrdersInProgress.FirstOrDefault();
-
-                    if (doneOrder != null)
+                    if (this.OrdersInProgress.Any())
                     {
-                        this.DoneOrders.Add(doneOrder);
-                        this.OrdersInProgress.Remove(doneOrder);
-                        var doneOrdersCount = this.DoneOrders.Count;
-                        var ordersInProgressCount = this.OrdersInProgress.Count;
-                        NewMealEventArgs e = new NewMealEventArgs(doneOrdersCount, ordersInProgressCount);
-                        this.OnNewMealAppeared(e);
+                        Thread.Sleep(1000);
+                        var doneOrder = this.OrdersInProgress.FirstOrDefault();
+
+                        if (doneOrder != null)
+                        {
+                            this.DoneOrders.Add(doneOrder);
+                            this.OrdersInProgress.Remove(doneOrder);
+                            var doneOrdersCount = this.DoneOrders.Count;
+                            var ordersInProgressCount = this.OrdersInProgress.Count;
+                            NewMealEventArgs e = new NewMealEventArgs(doneOrdersCount, ordersInProgressCount);
+                            this.OnNewMealAppeared(e);
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
                 }
             }
         }
