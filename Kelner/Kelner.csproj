@@ -62,10 +62,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\Client.cs" />
     <Compile Include="Model\ClientsQueue.cs" />
-    <Compile Include="Model\Kitchen.cs" />
+    <Compile Include="Model\KitchenWorker.cs" />
+    <Compile Include="Model\Order.cs" />
     <Compile Include="Model\Section.cs" />
-    <Compile Include="Model\Waiter.cs" />
+    <Compile Include="Model\TableWorker.cs" />
+    <Compile Include="Model\WaiterWorker.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />

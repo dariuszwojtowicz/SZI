@@ -1,10 +1,6 @@
 ﻿namespace Kelner.ViewModel
 {
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
-    using System.Threading;
-    using System.Windows.Media.Animation;
-    using System.Windows.Media.TextFormatting;
 
     using Kelner.Model;
 
@@ -21,18 +17,25 @@
         public MainWindowViewModel()
         {
             this.Waiter = new WaiterWorker();
-            this.SayHelloCommand = new RelayCommand(this.SayHello);
             this.StartWaiterWorkCommand = new RelayCommand(this.StartWork);
             this.StopWaiterWorkCommand = new RelayCommand(this.StopWork);
-            this.AddOrderCommand = new RelayCommand(this.AddOrder);
-
-            this.CreateSections();
+            this.WriteNewOrderCommand = new RelayCommand(this.WriteNewOrder);
+            this.GiveWrittenOrdersToKitchenCommand = new RelayCommand(this.GiveNewOrdersToKitchen);
+            this.TakeOrderFromKitchenCommand = new RelayCommand(this.TakeOrderFromKitchen);
+            this.GiveOrdersToClientsCommand = new RelayCommand(this.GiveOrdersToClients);
         }
 
-        public RelayCommand SayHelloCommand { get; set; }
         public RelayCommand StartWaiterWorkCommand { get; set; }
+
         public RelayCommand StopWaiterWorkCommand { get; set; }
-        public RelayCommand AddOrderCommand { get; set; }
+
+        public RelayCommand WriteNewOrderCommand { get; set; }
+
+        public RelayCommand GiveWrittenOrdersToKitchenCommand { get; set; }
+
+        public RelayCommand TakeOrderFromKitchenCommand { get; set; }
+
+        public RelayCommand GiveOrdersToClientsCommand { get; set; }
 
         public ObservableCollection<Section> Sections
         {
@@ -45,20 +48,6 @@
             {
                 this.sections = value;
                 
-            }
-        }
-
-        public string WaiterName
-        {
-            get
-            {
-                return this.waiterName;
-            }
-
-            set
-            {
-                this.waiterName = value;
-                this.RaisePropertyChanged("WaiterName");
             }
         }
 
@@ -76,12 +65,6 @@
             }
         }
 
-        private void SayHello()
-        {
-            this.WaiterName = "Siema, jestem Zenek Bębenek";
-            this.CreateSections();
-        }
-
         private void StartWork()
         {
             this.Waiter.StartWork();
@@ -92,23 +75,46 @@
             this.Waiter.StopWork();
         }
 
-        private void AddOrder()
+        /// <summary>
+        /// Zapisz nowe zamówienie od klientów
+        /// </summary>
+        private void WriteNewOrder()
         {
-            this.Waiter.Orders++;
+            var newOrder = new Order { OrderState = Order.State.New, TableNumber = 2 };
+            this.Waiter.WrittenOrders.Add(newOrder);
+            this.Waiter.RefreshInformations();
         }
 
-        private void CreateSections()
+        private void GiveNewOrdersToKitchen()
         {
-            this.Sections = new ObservableCollection<Section>();
-
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    var section = new Section { X = i * 25, Y = j * 25 };
-                    this.Sections.Add(section);
-                }
-            }
+            this.Waiter.GiveOrdersToKitchen();
+            this.Waiter.RefreshInformations();
         }
+
+        private void TakeOrderFromKitchen()
+        {
+            this.Waiter.TakeOrderFromKitchen();
+            this.Waiter.RefreshInformations();
+        }
+
+        private void GiveOrdersToClients()
+        {
+            this.Waiter.GiveOrdersToClients();
+            this.Waiter.RefreshInformations();
+        }
+
+        //private void CreateSections()
+        //{
+        //    this.Sections = new ObservableCollection<Section>();
+
+        //    for (int i = 0; i < 10; i++)
+        //    {
+        //        for (int j = 0; j < 10; j++)
+        //        {
+        //            var section = new Section { X = i * 25, Y = j * 25 };
+        //            this.Sections.Add(section);
+        //        }
+        //    }
+        //}
     }
 }
