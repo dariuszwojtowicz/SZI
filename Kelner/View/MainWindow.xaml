@@ -42,7 +42,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Ellipse Fill="Brown" Width="25" Height="25"/>
+                        <Ellipse Fill="{Binding Brush}" Width="25" Height="25"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemContainerStyle>

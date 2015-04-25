@@ -1,6 +1,7 @@
 ﻿namespace Kelner.ViewModel
 {
     using System.Collections.ObjectModel;
+    using System.Windows.Media;
 
     using Kelner.Model;
 
@@ -25,6 +26,8 @@
             this.GiveOrdersToClientsCommand = new RelayCommand(this.GiveOrdersToClients);
             this.GetClientFromQueueCommand = new RelayCommand(this.GetClientFromQueue);
             this.CleanTableCommand = new RelayCommand(this.CleanTable);
+
+            this.CreateSections();
         }
 
         public RelayCommand StartWaiterWorkCommand { get; set; }
@@ -119,18 +122,36 @@
             this.Waiter.CleanTable();
         }
 
-        //private void CreateSections()
-        //{
-        //    this.Sections = new ObservableCollection<Section>();
+        private void CreateSections()
+        {
+            this.Sections = new ObservableCollection<Section>();
 
-        //    for (int i = 0; i < 10; i++)
-        //    {
-        //        for (int j = 0; j < 10; j++)
-        //        {
-        //            var section = new Section { X = i * 25, Y = j * 25 };
-        //            this.Sections.Add(section);
-        //        }
-        //    }
-        //}
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    Section section;
+
+                    if (i * j % 5 == 0)
+                    {
+                        section = new Chair { X = i * 25, Y = j * 25 };
+                    }
+                    else if (i * j % 12 == 0)
+                    {
+                        section = new TablePart { X = i * 25, Y = j * 25 };
+                    }
+                    else if (i * j == 81)
+                    {
+                        section = new Kitchen { X = i * 25, Y = j * 25 };
+                    }
+                    else
+                    {
+                        section = new Floor { X = i * 25, Y = j * 25 };
+                    }
+
+                    this.Sections.Add(section);
+                }
+            }
+        }
     }
 }
