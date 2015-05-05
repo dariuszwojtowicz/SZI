@@ -1,8 +1,14 @@
 ﻿namespace Kelner.ViewModel
 {
+    using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Threading;
     using System.Windows.Media;
+    using System.Windows.Threading;
 
+    using Kelner.Algorithm;
     using Kelner.Model;
 
     public class MainWindowViewModel : ViewModelBase
@@ -26,6 +32,7 @@
             this.GiveOrdersToClientsCommand = new RelayCommand(this.GiveOrdersToClients);
             this.GetClientFromQueueCommand = new RelayCommand(this.GetClientFromQueue);
             this.CleanTableCommand = new RelayCommand(this.CleanTable);
+            this.GoToPointCommand = new RelayCommand(this.GoToPoint);
 
             this.CreateSections();
         }
@@ -46,6 +53,8 @@
 
         public RelayCommand CleanTableCommand { get; set; }
 
+        public RelayCommand GoToPointCommand { get; set; }
+
         public ObservableCollection<Section> Sections
         {
             get
@@ -56,6 +65,7 @@
             set
             {
                 this.sections = value;
+                this.RaisePropertyChanged("Sections");
                 
             }
         }
@@ -73,6 +83,10 @@
                 this.RaisePropertyChanged("Waiter");
             }
         }
+
+        public int TargetX { get; set; }
+
+        public int TargetY { get; set; }
 
         private void StartWork()
         {
@@ -122,6 +136,102 @@
             this.Waiter.CleanTable();
         }
 
+        private void GoToPoint()
+        {
+            var waiterActions = this.Waiter.GoToPoint(this.TargetX, this.TargetY);
+            this.MoveWaiter(waiterActions);
+        }
+
+        private void MoveWaiter(List<WaiterAction> waiterActions)
+        {
+            var waiterAction = waiterActions.FirstOrDefault();
+            switch (waiterAction)
+            {
+                case WaiterAction.GoForward:
+                    this.WaiterMoveForward();
+                    break;
+                case WaiterAction.TurnLeft:
+                    this.WaiterTurnLeft();
+                    break;
+                case WaiterAction.TurnRight:
+                    this.WaiterTurnRight();
+                    break;
+            }
+
+            this.Waiter.CreateSections();
+            this.CreateSections();
+        }
+
+        private void WaiterMoveForward()
+        {
+            var newState = new State { Direction = this.Waiter.State.Direction };
+            switch (this.Waiter.State.Direction)
+            {
+                case Direction.South:
+                    newState.X = this.Waiter.State.X;
+                    newState.Y = this.Waiter.State.Y + 1;
+                    break;
+                case Direction.West:
+                    newState.X = this.Waiter.State.X - 1;
+                    newState.Y = this.Waiter.State.Y;
+                    break;
+                case Direction.North:
+                    newState.X = this.Waiter.State.X;
+                    newState.Y = this.Waiter.State.Y - 1;
+                    break;
+                case Direction.East:
+                    newState.X = this.Waiter.State.X + 1;
+                    newState.Y = this.Waiter.State.Y;
+                    break;
+            }
+
+            this.Waiter.State = newState;
+        }
+
+        private void WaiterTurnLeft()
+        {
+            var newState = new State { X = this.Waiter.State.X, Y = this.Waiter.State.Y };
+            switch (this.Waiter.State.Direction)
+            {
+                case Direction.South:
+                    newState.Direction = Direction.East;
+                    break;
+                case Direction.East:
+                    newState.Direction = Direction.North;
+                    break;
+                case Direction.North:
+                    newState.Direction = Direction.West;
+                    break;
+                case Direction.West:
+                    newState.Direction = Direction.South;
+                    break;
+            }
+
+            this.Waiter.State = newState;
+        }
+
+        private void WaiterTurnRight()
+        {
+            var newState = new State { X = this.Waiter.State.X, Y = this.Waiter.State.Y };
+            switch (this.Waiter.State.Direction)
+            {
+                case Direction.South:
+                    newState.Direction = Direction.West;
+                    break;
+                case Direction.West:
+                    newState.Direction = Direction.North;
+                    break;
+                case Direction.North:
+                    newState.Direction = Direction.East;
+                    break;
+                case Direction.East:
+                    newState.Direction = Direction.South;
+                    break;
+            }
+
+            this.Waiter.State = newState;
+        }
+
         private void CreateSections()
         {
             this.Sections = new ObservableCollection<Section>();
@@ -130,24 +240,7 @@
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    Section section;
-
-                    if (i * j % 5 == 0)
-                    {
-                        section = new Chair { X = i * 25, Y = j * 25 };
-                    }
-                    else if (i * j % 12 == 0)
-                    {
-                        section = new TablePart { X = i * 25, Y = j * 25 };
-                    }
-                    else if (i * j == 81)
-                    {
-                        section = new Kitchen { X = i * 25, Y = j * 25 };
-                    }
-                    else
-                    {
-                        section = new Floor { X = i * 25, Y = j * 25 };
-                    }
+                    Section section = this.Waiter.RestaurantSections[i][j];
 
                     this.Sections.Add(section);
                 }

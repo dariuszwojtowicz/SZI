@@ -58,6 +58,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Algorithm\Info.cs" />
+    <Compile Include="Algorithm\NTree.cs" />
+    <Compile Include="Algorithm\Walking.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

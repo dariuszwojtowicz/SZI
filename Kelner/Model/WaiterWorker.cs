@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Kelner.Algorithm;
     using Kelner.ViewModel;
 
     /// <summary>
@@ -44,9 +45,88 @@
             this.tableWorker = new TableWorker();
             this.tableWorker.ClientOutEvent += this.OnClientOut;
             this.tableWorker.NewTableOrderEvent += this.OnNewTableOrder;
+
+            this.RestaurantSections = new Section[10][];
+
+            for (int i = 0; i < 10; i++)
+            {
+                this.RestaurantSections[i] = new Section[10];
+            }
+
+            this.State = new State
+            {
+                X = 5,
+                Y = 5,
+                Direction = Direction.South
+            };
+
+            this.CreateSections();
         }
 
         public Section[][] RestaurantSections { get; set; }
+
+        public State State { get; set; }
+
+        public List<WaiterAction> GoToPoint(int x, int y)
+        {
+            var targetState = new State { X = x, Y = y, Direction = Direction.South };
+
+            var walkAlgorithm = new WalkingAStar();
+            var waiterActions = walkAlgorithm.GetPath(this.State, targetState, this.RestaurantSections);
+
+            return waiterActions;
+        }
+
+        public void CreateSections()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    Section section = null;
+
+                    if (i == 5 && j == 6)
+                    {
+                        section = new Chair { X = i * 25, Y = j * 25 };
+                    }
+                    if (i == 1 && j == 8)
+                    {
+                        section = new Chair { X = i * 25, Y = j * 25 };
+                    }
+                    if (i == 8 && j == 9)
+                    {
+                        section = new Chair { X = i * 25, Y = j * 25 };
+                    }
+                    if (i == 2 && j == 2)
+                    {
+                        section = new Chair { X = i * 25, Y = j * 25 };
+                    }
+
+                    if (i == 3 && j == 8)
+                    {
+                        section = new TablePart { X = i * 25, Y = j * 25 };
+                    }
+
+                    if (i * j == 81)
+                    {
+                        section = new Kitchen { X = i * 25, Y = j * 25 };
+                    }
+
+                    if (section == null)
+                    {
+                        section = new Floor { X = i * 25, Y = j * 25 };
+                    }
+
+                    this.RestaurantSections[i][j] = section;
+                }
+            }
+
+            this.RestaurantSections[this.State.X][this.State.Y] = new Waiter
+            {
+                X = this.State.X * 25,
+                Y = this.State.Y * 25
+            };
+        }
 
         public void StartWork()
         {
@@ -256,19 +336,6 @@
                 this.RaisePropertyChanged("ClientsQueue");
                 this.RaisePropertyChanged("InformationAboutClients");
             }
-        }
-
-        public int PositionX { get; set; }
-        public int PositionY { get; set; }
-
-        public Direction WaiterDirection { get; set; }
-
-        public enum Direction
-        {
-            North,
-            South,
-            East,
-            West
         }
 
         public string InformationAboutClients

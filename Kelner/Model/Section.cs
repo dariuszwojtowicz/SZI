@@ -78,14 +78,20 @@
         {
             get
             {
-                return new SolidColorBrush(Colors.Blue);
+                return new SolidColorBrush(Colors.IndianRed);
             }
         }
     }
 
     public class Waiter : Obstacle
     {
-        
+        public override Brush Brush
+        {
+            get
+            {
+                return new SolidColorBrush(Colors.DarkBlue);
+            }
+        }
     }
 
     public class ClientSection : Obstacle

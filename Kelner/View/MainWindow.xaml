@@ -47,8 +47,8 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemContainerStyle>
                     <Style>
-                      <Setter Property="Canvas.Top" Value="{Binding Path=X}"/>
-                        <Setter Property="Canvas.Left" Value="{Binding Path=Y}"/>
+                        <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
                     </Style>
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>
@@ -70,6 +70,9 @@
                     <Button Content="Stop" Command="{Binding StopWaiterWorkCommand}" Margin="5"/>
                     <Button Content="Przyjmij klientów" Command="{Binding GetClientFromQueueCommand}" Margin="5"/>
                     <Button Content="Wyczyść stół" Command="{Binding CleanTableCommand}" Margin="5"/>
+                    <TextBox Text="{Binding TargetX}" Width="50"/>
+                    <TextBox Text="{Binding TargetY}" Width="50"/>
+                    <Button Content="Zapierdalaj!!!!" Command="{Binding GoToPointCommand}" Margin="5"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
