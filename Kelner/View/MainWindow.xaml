@@ -72,7 +72,7 @@
                     <Button Content="Wyczyść stół" Command="{Binding CleanTableCommand}" Margin="5"/>
                     <TextBox Text="{Binding TargetX}" Width="50"/>
                     <TextBox Text="{Binding TargetY}" Width="50"/>
-                    <Button Content="Zapierdalaj!!!!" Command="{Binding GoToPointCommand}" Margin="5"/>
+                    <Button Content=" Idź " Command="{Binding GoToPointCommand}" Margin="5"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
