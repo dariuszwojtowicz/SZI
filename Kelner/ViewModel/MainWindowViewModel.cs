@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Windows.Media;
@@ -33,6 +34,8 @@
             this.GetClientFromQueueCommand = new RelayCommand(this.GetClientFromQueue);
             this.CleanTableCommand = new RelayCommand(this.CleanTable);
             this.GoToPointCommand = new RelayCommand(this.GoToPoint);
+
+            this.Waiter.GetClientEvent += this.OnGetClient;
 
             this.CreateSections();
         }
@@ -142,6 +145,11 @@
             this.MoveWaiter(waiterActions);
         }
 
+        private void OnGetClient(object sender, WaiterWorker.GetClientEventArgs eventArgs)
+        {
+            this.MoveWaiter(eventArgs.WaiterActions);
+        }
+
         private void MoveWaiter(List<WaiterAction> waiterActions)
         {
             var waiterAction = waiterActions.FirstOrDefault();
@@ -149,12 +157,15 @@
             {
                 case WaiterAction.GoForward:
                     this.WaiterMoveForward();
+                    Debug.WriteLine("Krok do przodu");
                     break;
                 case WaiterAction.TurnLeft:
                     this.WaiterTurnLeft();
+                    Debug.WriteLine("Obórt w lewo");
                     break;
                 case WaiterAction.TurnRight:
                     this.WaiterTurnRight();
+                    Debug.WriteLine("Obrót w prawo");
                     break;
             }
 

@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Media.Animation;
 
     using Kelner.Algorithm;
     using Kelner.ViewModel;
@@ -66,7 +67,7 @@
 
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
-            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Patryk\\Desktop\\client.txt");
+            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Maciej\\Desktop\\client.txt");
             //Debug.WriteLine(sam.GetTree("C:\\Users\\Patryk\\Desktop\\plik.txt"));
         }
 
@@ -367,7 +368,9 @@
 
             if (this.NewClientDecision())
             {
-
+                var waiterActions = this.GoToPoint(9, 8);
+                GetClientEventArgs e = new GetClientEventArgs(waiterActions);
+                this.OnGetClient(e);
             }
         }
 
@@ -375,7 +378,7 @@
         {
             var currentTreeNode = this.clientsQueueTreeRoot;
             var parameter = -1;
-
+            return true;
             while (true)
             {
 
@@ -445,6 +448,25 @@
         private void OnNewTableOrder(object sender, NewTableOrderEventArgs e)
         {
             this.OrdersOnTables++;
+        }
+
+        public event GetClientEventHandler GetClientEvent;
+
+        protected virtual void OnGetClient(GetClientEventArgs e)
+        {
+            this.GetClientEvent(this, e);
+        }
+
+        public delegate void GetClientEventHandler(object sender, GetClientEventArgs e);
+
+        public class GetClientEventArgs
+        {
+            public GetClientEventArgs(List<WaiterAction> waiterActions)
+            {
+                this.WaiterActions = waiterActions;
+            }
+            
+            public List<WaiterAction> WaiterActions { get; set; }
         }
     }
 }
