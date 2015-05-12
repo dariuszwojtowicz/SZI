@@ -9,9 +9,9 @@ namespace Kelner.Algorithm
     /// </summary>
     public class TreeNode
     {
+        
         public TreeNodeCollection _children;
         private TreeAttribute _attribute;
-        private Kelner.Algorithm.OutcomeTreeAttribute outcomeTreeAttribute;
 
         /// <summary>
         /// Inicializa uma nova instância de TreeNode
@@ -31,12 +31,6 @@ namespace Kelner.Algorithm
                 _children.Add(null);
             }
             _attribute = attribute;
-        }
-
-        public TreeNode(Kelner.Algorithm.OutcomeTreeAttribute outcomeTreeAttribute)
-        {
-            // TODO: Complete member initialization
-            this.outcomeTreeAttribute = outcomeTreeAttribute;
         }
 
         /// <summary>

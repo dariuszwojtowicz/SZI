@@ -66,7 +66,8 @@
 
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
-            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Patryk\\Desktop\\plik.txt");
+            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Patryk\\Desktop\\client.txt");
+            //Debug.WriteLine(sam.GetTree("C:\\Users\\Patryk\\Desktop\\plik.txt"));
         }
 
         public Section[][] RestaurantSections { get; set; }

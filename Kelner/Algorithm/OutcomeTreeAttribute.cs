@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Kelner.Algorithm
 {
-    public class OutcomeTreeAttribute
+    public class OutcomeTreeAttribute : TreeAttribute
     {
-        private bool p;
-        private object p1;
-
-        public OutcomeTreeAttribute(bool p)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Label"></param>
+        public OutcomeTreeAttribute(object Label)
+            : base(String.Empty, null)
         {
-            // TODO: Complete member initialization
-            this.p = p;
-        }
-
-        public OutcomeTreeAttribute(object p1)
-        {
-            // TODO: Complete member initialization
-            this.p1 = p1;
+            _label = Label;
+            _name = string.Empty;
+            _possibleValues = null;
         }
     }
 }

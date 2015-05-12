@@ -1,4 +1,6 @@
-﻿namespace Kelner.Algorithm
+﻿
+
+namespace Kelner.Algorithm
 {
     using System;
     using System.Collections;
@@ -323,9 +325,9 @@
             DecisionTree id3 = new DecisionTree();
             TreeNode root = id3.mountTree(samples, "result", attributes);
 
+           // return PrintNode(root, "");
             Debug.WriteLine(this.PrintNode(root, ""));
             return root;
-           // return PrintNode(root, "");
 
         }
         public string PrintNode(TreeNode root, string tabs)
@@ -346,7 +348,7 @@
                     returnString += PrintNode(childNode, "\t" + tabs);
                 }
             }
-            // Debug.Write(returnString);
+            //Debug.Write(returnString);
             return returnString;
         }
 
