@@ -5,6 +5,7 @@
 
     using Kelner.Algorithm;
     using Kelner.ViewModel;
+    using System.Diagnostics;
 
     /// <summary>
     /// Klasa reprezentująca obiekt Kelnera, która będzie zbierać informacje o tym co się dzieje w restauracji
@@ -12,6 +13,7 @@
     public class WaiterWorker : ViewModelBase
     {
         // todo: metoda QuoVadis :)
+        private TreeNode clientsQueueTreeRoot;
 
         private KitchenWorker kitchenWorker;
 
@@ -61,6 +63,10 @@
             };
 
             this.CreateSections();
+
+
+            DecisionTreeImplementation sam = new DecisionTreeImplementation();
+            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Patryk\\Desktop\\plik.txt");
         }
 
         public Section[][] RestaurantSections { get; set; }
@@ -357,6 +363,76 @@
         {
             this.ClientsQueueCount = eventArgs.ClientCount;
             this.RefreshInformations();
+
+            if (this.NewClientDecision())
+            {
+
+            }
+        }
+
+        private bool NewClientDecision()
+        {
+            var currentTreeNode = this.clientsQueueTreeRoot;
+            var parameter = -1;
+
+            while (true)
+            {
+
+                if (currentTreeNode.Attribute.AttributeName.Trim().ToLower() == "false")
+                {
+                    return false;
+                }
+            
+                if (currentTreeNode.Attribute.AttributeName.Trim().ToLower() == "true")
+                {
+                    return true;
+                }
+
+                switch(currentTreeNode.Attribute.AttributeName)
+                {
+                    case "queue":
+                        parameter = 5;
+                        break;
+                    case "waiting_time":
+                        parameter = 5;
+                        break;
+                    case "order":
+                        parameter = 5;
+                        break;
+                    case "meals":
+                        parameter = 5;
+                        break;
+                    case "dirty":
+                        parameter = 5;
+                        break;
+                    case "free":
+                        parameter = 5;
+                        break;
+                }
+
+                var value = int.Parse(currentTreeNode.Attribute.PossibleValues[0]);
+                var difference = System.Math.Abs(parameter - value);
+                var index = 0;
+                for (int i = 1; i < currentTreeNode.Attribute.PossibleValues.Count; i++)
+                {
+                    value = int.Parse(currentTreeNode.Attribute.PossibleValues[i]);
+                    var newDifference = System.Math.Abs(parameter - value);
+
+                    if (newDifference < difference)
+                    {
+                        difference = newDifference;
+                        index++;
+                        continue;
+                    }
+
+                    break;
+                }
+
+                currentTreeNode = currentTreeNode._children[index];
+                
+            }
+
+            return false;
         }
 
         private void OnClientOut(object sender, ClientOutEventArgs e)

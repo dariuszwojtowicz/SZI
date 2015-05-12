@@ -6,32 +6,6 @@
     {
         public Section[,] Sections;
 
-        public NTree<State> GenerateTree(State startState, State endState)
-        {
-            this.CreateSections();
-            var tree = new NTree<State>(startState);
-
-            var turnLeftState = this.TurnLeft(startState);
-            if (turnLeftState != null)
-            {
-                tree.AddChild(turnLeftState);
-            } 
-
-            var turnRightState = this.TurnRight(startState);
-            if (turnRightState != null)
-            {
-                tree.AddChild(turnRightState);
-            }
-
-            var goForwardState = this.GoForward(startState); 
-            if (goForwardState != null)
-            {
-                tree.AddChild(goForwardState);
-            }
-
-            return tree;
-        }
-
         private State TurnLeft(State state)
         {
             var newState = new State { X = state.X, Y = state.Y };

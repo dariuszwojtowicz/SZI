@@ -58,7 +58,16 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Algorithm\Info.cs" />
-    <Compile Include="Algorithm\NTree.cs" />
+    <Compile Include="Algorithm\DecisionTree.cs" />
+    <Compile Include="Algorithm\OutcomeTreeAttribute.cs" />
+    <Compile Include="Algorithm\PossibleValueCollection.cs" />
+    <Compile Include="Algorithm\RawDataSource.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Algorithm\TreeAttribute.cs" />
+    <Compile Include="Algorithm\TreeAttributeCollection.cs" />
+    <Compile Include="Algorithm\TreeNode.cs" />
+    <Compile Include="Algorithm\TreeNodeCollection.cs" />
     <Compile Include="Algorithm\Walking.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

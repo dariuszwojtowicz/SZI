@@ -18,6 +18,14 @@ public enum StepDirection
     TurnRight
 }
 
+public enum Direction
+{
+    North,
+    East,
+    West,
+    South
+}
+
 public enum WaiterAction
 {
     TurnLeft,
