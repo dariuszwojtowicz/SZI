@@ -80,6 +80,7 @@
     <Compile Include="Model\Section.cs" />
     <Compile Include="Model\TableWorker.cs" />
     <Compile Include="Model\WaiterWorker.cs" />
+    <Compile Include="Model\WaiterWorker_Methods.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />

@@ -1,6 +1,4 @@
-﻿
-
-namespace Kelner.Algorithm
+﻿namespace Kelner.Algorithm
 {
     using System;
     using System.Collections;
@@ -10,9 +8,6 @@ namespace Kelner.Algorithm
     using System.IO;
     using System.Diagnostics;
 
-    /// <summary>
-    /// Classe que implementa uma árvore de Decisăo usando o algoritmo ID3
-    /// </summary>
     public class DecisionTree
     {
         private DataTable _sampleData;
@@ -21,11 +16,7 @@ namespace Kelner.Algorithm
         private string mTargetAttribute = "result";
         private double mEntropySet = 0.0;
 
-        /// <summary>
-        /// The total positive count in the source data
-        /// </summary>
-        /// <param name="samples">DataTable com as amostras</param>
-        /// <returns>O nro total de amostras positivas</returns>
+        // Funkcja licząca wszystkie pozytywy
         private int countTotalPositives(DataTable samples)
         {
             int result = 0;
@@ -39,16 +30,7 @@ namespace Kelner.Algorithm
             return result;
         }
 
-        /// <summary>
-        /// Calcula a entropia dada a seguinte fórmula
-        /// -p+log2p+ - p-log2p-
-        /// 
-        /// onde: p+ é a proporçăo de valores positivos
-        ///		  p- é a proporçăo de valores negativos
-        /// </summary>
-        /// <param name="positives">Quantidade de valores positivos</param>
-        /// <param name="negatives">Quantidade de valores negativos</param>
-        /// <returns>Retorna o valor da Entropia</returns>
+        // Entropia
         private double getCalculatedEntropy(int positives, int negatives)
         {
             int total = positives + negatives;
@@ -65,14 +47,7 @@ namespace Kelner.Algorithm
             return result;
         }
 
-        /// <summary>
-        /// Varre tabela de amostras verificando um atributo e se o resultado é positivo ou negativo
-        /// </summary>
-        /// <param name="samples">DataTable com as amostras</param>
-        /// <param name="attribute">Atributo a ser pesquisado</param>
-        /// <param name="value">valor permitido para o atributo</param>
-        /// <param name="positives">Conterá o nro de todos os atributos com o valor determinado com resultado positivo</param>
-        /// <param name="negatives">Conterá o nro de todos os atributos com o valor determinado com resultado negativo</param>
+        // Zliczanie wartości true i false dla danego atrybutu
         private void getValuesToAttribute(DataTable samples, TreeAttribute attribute, string value, out int positives, out int negatives)
         {
             positives = 0;
@@ -80,21 +55,15 @@ namespace Kelner.Algorithm
 
             foreach (DataRow aRow in samples.Rows)
             {
-                ///To do:   Figure out if this is correct - it looks bad
                 if (((string)aRow[attribute.AttributeName] == value))
                     if (aRow[mTargetAttribute].ToString().Trim().ToUpper() == "TRUE")
                         positives++;
                     else
                         negatives++;
-
             }
         }
 
-        /// <summary>
-        /// Calcula o ganho de um atributo
-        /// </summary>
-        /// <param name="attribute">Atributo a ser calculado</param>
-        /// <returns>O ganho do atributo</returns>
+        
         private double gain(DataTable samples, TreeAttribute attribute)
         {
             PossibleValueCollection values = attribute.PossibleValues;
@@ -114,11 +83,7 @@ namespace Kelner.Algorithm
             return mEntropySet + sum;
         }
 
-        /// <summary>
-        /// Retorna o melhor atributo.
-        /// </summary>
-        /// <param name="attributes">Um vetor com os atributos</param>
-        /// <returns>Retorna o que tiver maior ganho</returns>
+        // Wybranie najlepszego atrybutu
         private TreeAttribute getBestAttribute(DataTable samples, TreeAttributeCollection attributes)
         {
             double maxGain = 0.0;
@@ -126,22 +91,17 @@ namespace Kelner.Algorithm
 
             foreach (TreeAttribute attribute in attributes)
             {
-                double aux = gain(samples, attribute);
-                if (aux > maxGain)
+                double temp = gain(samples, attribute);
+                if (temp > maxGain)
                 {
-                    maxGain = aux;
+                    maxGain = temp;
                     result = attribute;
                 }
             }
             return result;
         }
 
-        /// <summary>
-        /// Retorna true caso todos os exemplos da amostragem săo positivos
-        /// </summary>
-        /// <param name="samples">DataTable com as amostras</param>
-        /// <param name="targetAttribute">Atributo (coluna) da tabela a qual será verificado</param>
-        /// <returns>True caso todos os exemplos da amostragem săo positivos</returns>
+        // Sprawdzanie czy wartości są pozytywne
         private bool allSamplesArePositive(DataTable samples, string targetAttribute)
         {
             foreach (DataRow row in samples.Rows)
@@ -153,12 +113,7 @@ namespace Kelner.Algorithm
             return true;
         }
 
-        /// <summary>
-        /// Retorna true caso todos os exemplos da amostragem săo negativos
-        /// </summary>
-        /// <param name="samples">DataTable com as amostras</param>
-        /// <param name="targetAttribute">Atributo (coluna) da tabela a qual será verificado</param>
-        /// <returns>True caso todos os exemplos da amostragem săo negativos</returns>
+        // Sprawdzanie czy wartości są negatywne
         private bool allSamplesAreNegative(DataTable samples, string targetAttribute)
         {
             foreach (DataRow row in samples.Rows)
@@ -170,12 +125,7 @@ namespace Kelner.Algorithm
             return true;
         }
 
-        /// <summary>
-        /// Retorna uma lista com todos os valores distintos de uma tabela de amostragem
-        /// </summary>
-        /// <param name="samples">DataTable com as amostras</param>
-        /// <param name="targetAttribute">Atributo (coluna) da tabela a qual será verificado</param>
-        /// <returns>Um ArrayList com os valores distintos</returns>
+        // Wyciągnięcie niepowtarzających się wartości z przykładowych danych dla danego atrybutu
         private ArrayList getDistinctValues(DataTable samples, string targetAttribute)
         {
             ArrayList distinctValues = new ArrayList(samples.Rows.Count);
@@ -189,12 +139,7 @@ namespace Kelner.Algorithm
             return distinctValues;
         }
 
-        /// <summary>
-        /// Retorna o valor mais comum dentro de uma amostragem
-        /// </summary>
-        /// <param name="samples">DataTable com as amostras</param>
-        /// <param name="targetAttribute">Atributo (coluna) da tabela a qual será verificado</param>
-        /// <returns>Retorna o objeto com maior incidęncia dentro da tabela de amostras</returns>
+        // Określanie wartości dla danego atrybutu, która występuje najwięcej razy w danych uczących
         private object getMostCommonValue(DataTable samples, string targetAttribute)
         {
             ArrayList distinctValues = getDistinctValues(samples, targetAttribute);
@@ -221,13 +166,7 @@ namespace Kelner.Algorithm
             return distinctValues[MaxIndex];
         }
 
-        /// <summary>
-        /// Monta uma árvore de decisăo baseado nas amostragens apresentadas
-        /// </summary>
-        /// <param name="samples">Tabela com as amostragens que serăo apresentadas para a montagem da árvore</param>
-        /// <param name="targetAttribute">Nome da coluna da tabela que possue o valor true ou false para 
-        /// validar ou năo uma amostragem</param>
-        /// <returns>A raiz da árvore de decisăo montada</returns></returns?>
+        
         private TreeNode internalMountTree(DataTable samples, string targetAttribute, TreeAttributeCollection attributes)
         {
             if (allSamplesArePositive(samples, targetAttribute) == true)
@@ -255,8 +194,7 @@ namespace Kelner.Algorithm
             DataTable aSample = samples.Clone();
 
             foreach (string value in bestAttribute.PossibleValues)
-            {
-                // Seleciona todas os elementos com o valor deste atributo				
+            {			
                 aSample.Rows.Clear();
 
                 DataRow[] rows = samples.Select(bestAttribute.AttributeName + " = " + "'" + value + "'");
@@ -265,9 +203,7 @@ namespace Kelner.Algorithm
                 {
                     aSample.Rows.Add(row.ItemArray);
                 }
-                // Seleciona todas os elementos com o valor deste atributo				
-
-                // Cria uma nova lista de atributos menos o atributo corrente que é o melhor atributo		
+	
                 TreeAttributeCollection aAttributes = new TreeAttributeCollection();
                 //ArrayList aAttributes = new ArrayList(attributes.Count - 1);
                 for (int i = 0; i < attributes.Count; i++)
@@ -275,7 +211,6 @@ namespace Kelner.Algorithm
                     if (attributes[i].AttributeName != bestAttribute.AttributeName)
                         aAttributes.Add(attributes[i]);
                 }
-                // Cria uma nova lista de atributos menos o atributo corrente que é o melhor atributo
 
                 if (aSample.Rows.Count == 0)
                 {
@@ -293,13 +228,6 @@ namespace Kelner.Algorithm
         }
 
 
-        /// <summary>
-        /// Monta uma árvore de decisăo baseado nas amostragens apresentadas
-        /// </summary>
-        /// <param name="samples">Tabela com as amostragens que serăo apresentadas para a montagem da árvore</param>
-        /// <param name="targetAttribute">Nome da coluna da tabela que possue o valor true ou false para 
-        /// validar ou năo uma amostragem</param>
-        /// <returns>A raiz da árvore de decisăo montada</returns></returns?>
         public TreeNode mountTree(DataTable samples, string targetAttribute, TreeAttributeCollection attributes)
         {
             _sampleData = samples;
@@ -307,9 +235,7 @@ namespace Kelner.Algorithm
         }
     }
 
-    /// <summary>
-    /// Classe que exemplifica a utilizaçăo do ID3
-    /// </summary>
+    // Pobranie pliku i generowanie drzewa decyzyjnego 
     public class DecisionTreeImplementation
     {
 
@@ -325,7 +251,6 @@ namespace Kelner.Algorithm
             DecisionTree id3 = new DecisionTree();
             TreeNode root = id3.mountTree(samples, "result", attributes);
 
-           // return PrintNode(root, "");
             Debug.WriteLine(this.PrintNode(root, ""));
             return root;
 
@@ -337,7 +262,16 @@ namespace Kelner.Algorithm
 
             if (tabs != String.Empty)
                 prefix = " -> Likely Outcome: ";
-            returnString += (tabs + prefix + root.Attribute) + Environment.NewLine;
+
+            if (root.Attribute == null)
+            {
+                returnString += (tabs + prefix + "False") + Environment.NewLine;
+            }
+            else
+            {
+                returnString += (tabs + prefix + root.Attribute) + Environment.NewLine;
+            }
+            
 
             if (root != null && root.Attribute != null && root.Attribute.PossibleValues != null)
             {
@@ -348,7 +282,6 @@ namespace Kelner.Algorithm
                     returnString += PrintNode(childNode, "\t" + tabs);
                 }
             }
-            //Debug.Write(returnString);
             return returnString;
         }
 

@@ -6,10 +6,6 @@ namespace Kelner.Algorithm
 {
     public class OutcomeTreeAttribute : TreeAttribute
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Label"></param>
         public OutcomeTreeAttribute(object Label)
             : base(String.Empty, null)
         {

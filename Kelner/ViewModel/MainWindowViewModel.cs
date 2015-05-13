@@ -152,21 +152,23 @@
 
         private void MoveWaiter(List<WaiterAction> waiterActions)
         {
-            var waiterAction = waiterActions.FirstOrDefault();
-            switch (waiterAction)
+            foreach (var waiterAction in waiterActions)
             {
-                case WaiterAction.GoForward:
-                    this.WaiterMoveForward();
-                    Debug.WriteLine("Krok do przodu");
-                    break;
-                case WaiterAction.TurnLeft:
-                    this.WaiterTurnLeft();
-                    Debug.WriteLine("Obórt w lewo");
-                    break;
-                case WaiterAction.TurnRight:
-                    this.WaiterTurnRight();
-                    Debug.WriteLine("Obrót w prawo");
-                    break;
+                switch (waiterAction)
+                {
+                    case WaiterAction.GoForward:
+                        this.WaiterMoveForward();
+                        Debug.WriteLine("Krok do przodu");
+                        break;
+                    case WaiterAction.TurnLeft:
+                        this.WaiterTurnLeft();
+                        Debug.WriteLine("Obórt w lewo");
+                        break;
+                    case WaiterAction.TurnRight:
+                        this.WaiterTurnRight();
+                        Debug.WriteLine("Obrót w prawo");
+                        break;
+                }
             }
 
             this.Waiter.CreateSections();

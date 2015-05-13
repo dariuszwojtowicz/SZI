@@ -7,11 +7,12 @@
     using Kelner.Algorithm;
     using Kelner.ViewModel;
     using System.Diagnostics;
+    using System;
 
     /// <summary>
     /// Klasa reprezentująca obiekt Kelnera, która będzie zbierać informacje o tym co się dzieje w restauracji
     /// </summary>
-    public class WaiterWorker : ViewModelBase
+    public partial class WaiterWorker : ViewModelBase
     {
         // todo: metoda QuoVadis :)
         private TreeNode clientsQueueTreeRoot;
@@ -67,7 +68,7 @@
 
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
-            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Maciej\\Desktop\\client.txt");
+            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Patryk\\Desktop\\client.txt");
             //Debug.WriteLine(sam.GetTree("C:\\Users\\Patryk\\Desktop\\plik.txt"));
         }
 
@@ -378,39 +379,49 @@
         {
             var currentTreeNode = this.clientsQueueTreeRoot;
             var parameter = -1;
-            return true;
+           
             while (true)
             {
-
-                if (currentTreeNode.Attribute.AttributeName.Trim().ToLower() == "false")
+#region checkvalue
+                if (currentTreeNode.Attribute == null)
                 {
                     return false;
                 }
-            
-                if (currentTreeNode.Attribute.AttributeName.Trim().ToLower() == "true")
+
+                if (string.IsNullOrEmpty(currentTreeNode.Attribute.ToString()))
+                {
+                    return false;
+                }
+#endregion checkvalue
+                if (currentTreeNode.Attribute.ToString().Trim().ToLower() == "false")
+                {
+                    return false;
+                }
+
+                if (currentTreeNode.Attribute.ToString().Trim().ToLower() == "true")
                 {
                     return true;
                 }
 
-                switch(currentTreeNode.Attribute.AttributeName)
+                switch (currentTreeNode.Attribute.ToString())
                 {
                     case "queue":
-                        parameter = 5;
+                        parameter = this.ClientsQueueCount;
                         break;
                     case "waiting_time":
-                        parameter = 5;
+                        parameter = this.WaitingTime();
                         break;
                     case "order":
-                        parameter = 5;
+                        parameter = this.OrdersOnTables;
                         break;
                     case "meals":
-                        parameter = 5;
+                        parameter = this.DoneOrdersOnKitchen;
                         break;
                     case "dirty":
-                        parameter = 5;
+                        parameter = this.CheckDirtyTables();
                         break;
                     case "free":
-                        parameter = 5;
+                        parameter = this.CheckFreeTables();
                         break;
                 }
 

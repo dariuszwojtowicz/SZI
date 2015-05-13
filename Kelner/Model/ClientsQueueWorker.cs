@@ -46,8 +46,6 @@
         {
             while (!this.shouldStop)
             {
-                Thread.Sleep(1000);
-
                 var newClient = new Client
                 {
                     CanSplit = false,
@@ -57,6 +55,7 @@
                 NewClientEventArgs e = new NewClientEventArgs(this.WaitingClients.Count);
                 this.OnNewClientAppeared(e);
 
+                Thread.Sleep(10000);
             }
         }
     }
