@@ -69,7 +69,6 @@
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
             this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Patryk\\Desktop\\client.txt");
-            //Debug.WriteLine(sam.GetTree("C:\\Users\\Patryk\\Desktop\\plik.txt"));
         }
 
         public Section[][] RestaurantSections { get; set; }
@@ -372,6 +371,11 @@
                 var waiterActions = this.GoToPoint(9, 8);
                 GetClientEventArgs e = new GetClientEventArgs(waiterActions);
                 this.OnGetClient(e);
+                Debug.WriteLine("Przyjąłem klienta");
+            }
+            else
+            {
+                Debug.WriteLine("Nie przyjąłem klienta");
             }
         }
 

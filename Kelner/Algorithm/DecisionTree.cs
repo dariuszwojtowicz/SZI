@@ -258,10 +258,10 @@
         public string PrintNode(TreeNode root, string tabs)
         {
             string returnString = String.Empty;
-            string prefix = "Best Attribute: ";
+            string prefix = "Najlepszy atrybut: ";
 
             if (tabs != String.Empty)
-                prefix = " -> Likely Outcome: ";
+                prefix = " -> Decyzja: ";
 
             if (root.Attribute == null)
             {
@@ -277,7 +277,7 @@
             {
                 for (int i = 0; i < root.Attribute.PossibleValues.Count; i++)
                 {
-                    returnString += (Environment.NewLine + tabs + "\t" + "Input:  " + root.Attribute.PossibleValues[i]) + Environment.NewLine;
+                    returnString += (Environment.NewLine + tabs + "\t" + "Wejście:  " + root.Attribute.PossibleValues[i]) + Environment.NewLine;
                     TreeNode childNode = root.GetChildByBranchName(root.Attribute.PossibleValues[i]);
                     returnString += PrintNode(childNode, "\t" + tabs);
                 }
