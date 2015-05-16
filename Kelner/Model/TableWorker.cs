@@ -10,19 +10,20 @@
 
         private bool shouldStop;
 
-        public TableWorker()
+        public TableWorker(int x, int y)
         {
             this.thread = new Thread(this.TableWorkerFunc);
-            this.TableParts = new List<TablePart>();
-            this.Chairs = new List<Chair>();
             this.IsFree = true;
             this.IsDirty = false;
             this.Number = 1;
+
+            this.X = x;
+            this.Y = y;
         }
 
-        public List<TablePart> TableParts { get; set; }
-
-        public List<Chair> Chairs { get; set; }
+        public int X { get; set; }
+        
+        public int Y { get; set; }
 
         public bool IsDirty { get; set; }
 
@@ -43,8 +44,6 @@
 
         public void Start()
         {
-            this.TableParts = new List<TablePart>();
-            this.Chairs = new List<Chair>();
             this.thread = new Thread(this.TableWorkerFunc);
             this.shouldStop = false;
             this.thread.Start();
@@ -83,7 +82,7 @@
                     {
                         Thread.Sleep(1000);
                         this.CreateNewOrder();
-                        NewTableOrderEventArgs e = new NewTableOrderEventArgs(this.Number);
+                        NewTableOrderEventArgs e = new NewTableOrderEventArgs(this.X, this.Y);
                         this.OnNewTableOrder(e);
                     }
                     else
@@ -91,15 +90,11 @@
                         if (this.Order.OrderState == Order.State.Done)
                         {
                             Thread.Sleep(3000);
-                            foreach (var chair in this.Chairs)
-                            {
-                                chair.IsFree = true;
-                            }
 
                             this.IsDirty = true;
                             this.IsFree = true;
                             this.Order = null;
-                            ClientOutEventArgs e = new ClientOutEventArgs(this.Number);
+                            ClientOutEventArgs e = new ClientOutEventArgs(this.X, this.Y);
                             this.OnClientOutEvent(e);
                         }
                     }
@@ -115,11 +110,14 @@
 
     public class NewTableOrderEventArgs
     {
-        public int TableNumber { get; set; }
+        public int TableX { get; set; }
 
-        public NewTableOrderEventArgs(int i)
+        public int TableY { get; set; }
+
+        public NewTableOrderEventArgs(int x, int y)
         {
-            this.TableNumber = i;
+            this.TableX = x;
+            this.TableY = y;
         }
 
     }
@@ -131,11 +129,14 @@
 
     public class ClientOutEventArgs
     {
-        public int TableNumber { get; set; }
+        public int TableX { get; set; }
 
-        public ClientOutEventArgs(int i)
+        public int TableY { get; set; }
+
+        public ClientOutEventArgs(int x, int y)
         {
-            this.TableNumber = i;
+            this.TableX = x;
+            this.TableY = y;
         }
 
     }

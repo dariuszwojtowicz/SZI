@@ -25,5 +25,11 @@ namespace Kelner.Model
             var random = new Random();
             return random.Next(0, 60);
         }
+
+        private int OrdersOnKitchen()
+        {
+            var random = new Random();
+            return random.Next(0, 5);
+        }
     }
 }

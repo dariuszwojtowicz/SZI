@@ -21,11 +21,13 @@
 
         private TreeNode clientsQueueTreeRoot;
 
+        private TreeNode ordersQueueTreeRoot;
+
         private KitchenWorker kitchenWorker;
 
         private ClientsQueueWorker clientsQueueWorker;
 
-        private TableWorker tableWorker;
+        private TableWorker[] tableWorkers;
 
         private int mealsOnKitchen;
 
@@ -53,9 +55,7 @@
             this.clientsQueueWorker = new ClientsQueueWorker();
             this.clientsQueueWorker.NewClientEvent += this.OnNewClientCome;
 
-            this.tableWorker = new TableWorker();
-            this.tableWorker.ClientOutEvent += this.OnClientOut;
-            this.tableWorker.NewTableOrderEvent += this.OnNewTableOrder;
+            this.InitTableWorkers();
 
             this.RestaurantSections = new Section[10][];
 
@@ -76,6 +76,23 @@
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
             this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Maciej\\Desktop\\client.txt");
+            this.ordersQueueTreeRoot = sam.GetTree("C:\\Users\\Maciej\\Desktop\\order.txt");
+        }
+
+        private void InitTableWorkers()
+        {
+            this.tableWorkers = new TableWorker[5];
+            this.tableWorkers[0] = new TableWorker(2, 2);
+            this.tableWorkers[1] = new TableWorker(2, 5);
+            this.tableWorkers[2] = new TableWorker(2, 8);
+            this.tableWorkers[3] = new TableWorker(7, 3);
+            this.tableWorkers[4] = new TableWorker(7, 6);
+
+            foreach (var tableWorker in this.tableWorkers)
+            {
+                tableWorker.ClientOutEvent += this.OnClientOut;
+                tableWorker.NewTableOrderEvent += this.OnNewTableOrder;
+            }
         }
 
         public Section[][] RestaurantSections { get; set; }
@@ -100,29 +117,32 @@
                 {
                     Section section = null;
 
-                    if (i == 5 && j == 6)
-                    {
-                        section = new Chair { X = i * 25, Y = j * 25 };
-                    }
-                    if (i == 1 && j == 8)
-                    {
-                        section = new Chair { X = i * 25, Y = j * 25 };
-                    }
-                    if (i == 8 && j == 9)
-                    {
-                        section = new Chair { X = i * 25, Y = j * 25 };
-                    }
                     if (i == 2 && j == 2)
-                    {
-                        section = new Chair { X = i * 25, Y = j * 25 };
-                    }
-
-                    if (i == 3 && j == 8)
                     {
                         section = new TablePart { X = i * 25, Y = j * 25 };
                     }
 
-                    if (i * j == 81)
+                    if (i == 2 && j == 5)
+                    {
+                        section = new TablePart { X = i * 25, Y = j * 25 };
+                    }
+
+                    if (i == 2 && j == 8)
+                    {
+                        section = new TablePart { X = i * 25, Y = j * 25 };
+                    }
+
+                    if (i == 7 && j == 3)
+                    {
+                        section = new TablePart { X = i * 25, Y = j * 25 };
+                    }
+
+                    if (i == 7 && j == 6)
+                    {
+                        section = new TablePart { X = i * 25, Y = j * 25 };
+                    }
+
+                    if (i == 9 && j == 0)
                     {
                         section = new Kitchen { X = i * 25, Y = j * 25 };
                     }
@@ -149,14 +169,20 @@
             this.DoneOrdersOnHands = new List<Order>();
             this.kitchenWorker.Start();
             this.clientsQueueWorker.Start();
-            this.tableWorker.Start();
+            foreach (var tableWorker in this.tableWorkers)
+            {
+                tableWorker.Start();   
+            }
         }
 
         public void StopWork()
         {
             this.kitchenWorker.Stop();
             this.clientsQueueWorker.Stop();
-            this.tableWorker.Stop();
+            foreach (var tableWorker in this.tableWorkers)
+            {
+                tableWorker.Stop();
+            }
             this.DoneOrdersOnKitchen = 0;
             this.OrdersIsProgressOnKitchen = 0;
             this.ClientsQueueCount = 0;
@@ -191,7 +217,13 @@
         public void GiveOrdersToClients()
         {
             this.DoneOrdersOnHands = new List<Order>();
-            this.tableWorker.Order.OrderState = Order.State.Done;
+            foreach (var tableWorker in this.tableWorkers)
+            {
+                if (tableWorker.Order.OrderState == Order.State.New)
+                {
+                    tableWorker.Order.OrderState = Order.State.Done;
+                }
+            }
         }
 
         public void GetClientFromQueue()
@@ -201,14 +233,24 @@
             {
                 this.clientsQueueWorker.WaitingClients.Remove(client);
                 this.ClientsQueueCount--;
-                this.tableWorker.IsFree = false;
+                foreach (var tableWorker in this.tableWorkers)
+                {
+                    if (tableWorker.IsFree)
+                    {
+                        tableWorker.IsFree = false;
+                        break;
+                    }
+                }
                 this.RefreshInformations();
             }
         }
 
         public void CleanTable()
         {
-            this.tableWorker.IsDirty = false;
+            foreach (var tableWorker in this.tableWorkers)
+            {
+                tableWorker.IsDirty = false;
+            }
             this.RefreshInformations();
         }
 
@@ -322,10 +364,11 @@
             get
             {
                 return string.Format(
-                    "Zamówienie: {0}\nWolny: {1}\nBrudny: {2}",
-                    this.OrdersOnTables,
-                    this.tableWorker.IsFree,
-                    this.tableWorker.IsDirty);
+                    "Liczba zamówień: {0}\nWolnych: {1}\nBrudnych: {2}",
+                    this.tableWorkers.Count(t => t.Order != null && t.Order.OrderState == Order.State.New),
+                    this.tableWorkers.Count(t => t.IsFree),
+                    this.tableWorkers.Count(t => t.IsDirty));
+;
             }
         }
 
@@ -412,9 +455,10 @@
             if (this.NewClientDecision())
             {
                 var waiterActions = this.GoToPoint(9, 8);
-                GetClientEventArgs e = new GetClientEventArgs(waiterActions);
-                this.OnGetClient(e);
+                MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
+                this.OnMoveWaiter(e);
                 Debug.WriteLine("Przyjąłem klienta");
+                this.GetClientFromQueue();
             }
             else
             {
@@ -497,6 +541,81 @@
             return false;
         }
 
+        private bool NewOrderDecision()
+        {
+            var currentTreeNode = this.ordersQueueTreeRoot;
+            var parameter = -1;
+
+            while (true)
+            {
+                #region checkvalue
+                if (currentTreeNode.Attribute == null)
+                {
+                    return false;
+                }
+
+                if (string.IsNullOrEmpty(currentTreeNode.Attribute.ToString()))
+                {
+                    return false;
+                }
+                #endregion checkvalue
+                if (currentTreeNode.Attribute.ToString().Trim().ToLower() == "false")
+                {
+                    return false;
+                }
+
+                if (currentTreeNode.Attribute.ToString().Trim().ToLower() == "true")
+                {
+                    return true;
+                }
+
+                switch (currentTreeNode.Attribute.ToString())
+                {
+                    case "queue":
+                        parameter = this.ClientsQueueCount;
+                        break;
+                    case "waiting_time":
+                        parameter = this.WaitingTime();
+                        break;
+                    case "order":
+                        parameter = this.OrdersOnTables;
+                        break;
+                    case "meals":
+                        parameter = this.OrdersOnKitchen();
+                        break;
+                    case "dirty":
+                        parameter = this.CheckDirtyTables();
+                        break;
+                    case "free":
+                        parameter = this.CheckFreeTables();
+                        break;
+                }
+
+                var value = int.Parse(currentTreeNode.Attribute.PossibleValues[currentTreeNode.Attribute.PossibleValues.Count - 1]);
+                var difference = System.Math.Abs(parameter - value);
+                var index = currentTreeNode.Attribute.PossibleValues.Count - 1;
+                for (int i = currentTreeNode.Attribute.PossibleValues.Count - 2; i >= 0; i--)
+                {
+                    value = int.Parse(currentTreeNode.Attribute.PossibleValues[i]);
+                    var newDifference = System.Math.Abs(parameter - value);
+
+                    if (newDifference < difference)
+                    {
+                        difference = newDifference;
+                        index--;
+                        continue;
+                    }
+
+                    break;
+                }
+
+                currentTreeNode = currentTreeNode._children[index];
+
+            }
+
+            return false;
+        }
+
         private void OnClientOut(object sender, ClientOutEventArgs e)
         {
             try
@@ -521,7 +640,7 @@
             this.RefreshInformations();
         }
 
-        private void OnNewTableOrder(object sender, NewTableOrderEventArgs e)
+        private void OnNewTableOrder(object sender, NewTableOrderEventArgs args)
         {
             try
             {
@@ -541,20 +660,32 @@
                 // The reader lock request timed out.
                 Interlocked.Increment(ref readerTimeouts);
             }
+
+            if (this.NewOrderDecision())
+            {
+                var waiterActions = this.GoToPoint(args.TableX + 1, args.TableY);
+                MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
+                this.OnMoveWaiter(e);
+                Debug.WriteLine("Przyjąłem zamówienie");
+            }
+            else
+            {
+                Debug.WriteLine("Nie przyjąłem zamówienia");
+            }
         }
 
-        public event GetClientEventHandler GetClientEvent;
+        public event MoveWaiterEventHandler MoveWaiterEvent;
 
-        protected virtual void OnGetClient(GetClientEventArgs e)
+        protected virtual void OnMoveWaiter(MoveWaiterEventArgs e)
         {
-            this.GetClientEvent(this, e);
+            this.MoveWaiterEvent(this, e);
         }
 
-        public delegate void GetClientEventHandler(object sender, GetClientEventArgs e);
+        public delegate void MoveWaiterEventHandler(object sender, MoveWaiterEventArgs e);
 
-        public class GetClientEventArgs
+        public class MoveWaiterEventArgs
         {
-            public GetClientEventArgs(List<WaiterAction> waiterActions)
+            public MoveWaiterEventArgs(List<WaiterAction> waiterActions)
             {
                 this.WaiterActions = waiterActions;
             }

@@ -35,7 +35,7 @@
             this.CleanTableCommand = new RelayCommand(this.CleanTable);
             this.GoToPointCommand = new RelayCommand(this.GoToPoint);
 
-            this.Waiter.GetClientEvent += this.OnGetClient;
+            this.Waiter.MoveWaiterEvent += this.OnMoveWaiter;
 
             this.CreateSections();
         }
@@ -145,7 +145,7 @@
             this.MoveWaiter(waiterActions);
         }
 
-        private void OnGetClient(object sender, WaiterWorker.GetClientEventArgs eventArgs)
+        private void OnMoveWaiter(object sender, WaiterWorker.MoveWaiterEventArgs eventArgs)
         {
             this.MoveWaiter(eventArgs.WaiterActions);
         }
