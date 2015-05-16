@@ -1,20 +1,24 @@
 ﻿namespace Kelner.Model
 {
+    using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
-    using System.Windows.Media.Animation;
+    using System.Threading;
 
     using Kelner.Algorithm;
     using Kelner.ViewModel;
-    using System.Diagnostics;
-    using System;
 
     /// <summary>
     /// Klasa reprezentująca obiekt Kelnera, która będzie zbierać informacje o tym co się dzieje w restauracji
     /// </summary>
     public partial class WaiterWorker : ViewModelBase
     {
-        // todo: metoda QuoVadis :)
+        static int readerTimeouts = 0;
+        static int writerTimeouts = 0;
+        static int reads = 0;
+        static int writes = 0;
+
         private TreeNode clientsQueueTreeRoot;
 
         private KitchenWorker kitchenWorker;
@@ -35,8 +39,11 @@
 
         private int ordersOnTables;
 
+        private static ReaderWriterLock rwl;
+
         public WaiterWorker()
         {
+            rwl = new ReaderWriterLock();
             this.WrittenOrders = new List<Order>();
             this.DoneOrdersOnHands = new List<Order>();
 
@@ -68,7 +75,7 @@
 
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
-            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Patryk\\Desktop\\client.txt");
+            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Maciej\\Desktop\\client.txt");
         }
 
         public Section[][] RestaurantSections { get; set; }
@@ -356,14 +363,50 @@
 
         private void OnNewMealFromKitchenWorker(object sender, NewMealEventArgs eventArgs)
         {
-            this.DoneOrdersOnKitchen = eventArgs.DoneMealCount;
-            this.OrdersIsProgressOnKitchen = eventArgs.OrdersInProgressCount;
+            try
+            {
+                rwl.AcquireReaderLock(100);
+                try
+                {
+
+                    this.DoneOrdersOnKitchen = eventArgs.DoneMealCount;
+                    this.OrdersIsProgressOnKitchen = eventArgs.OrdersInProgressCount;
+                    Interlocked.Increment(ref reads);
+                }
+                finally
+                {
+                    rwl.ReleaseReaderLock();
+                }
+            }
+            catch (Exception)
+            {
+                // The reader lock request timed out.
+                Interlocked.Increment(ref readerTimeouts);
+            }
             this.RefreshInformations();
         }
 
         private void OnNewClientCome(object sender, NewClientEventArgs eventArgs)
         {
-            this.ClientsQueueCount = eventArgs.ClientCount;
+            try
+            {
+                rwl.AcquireReaderLock(100);
+                try
+                {
+                    this.ClientsQueueCount = eventArgs.ClientCount;
+                    Interlocked.Increment(ref reads);
+                }
+                finally
+                {
+                    rwl.ReleaseReaderLock();
+                }
+            }
+            catch (Exception)
+            {
+                // The reader lock request timed out.
+                Interlocked.Increment(ref readerTimeouts);
+            }
+            
             this.RefreshInformations();
 
             if (this.NewClientDecision())
@@ -456,13 +499,48 @@
 
         private void OnClientOut(object sender, ClientOutEventArgs e)
         {
-            this.OrdersOnTables--;
+            try
+            {
+                rwl.AcquireReaderLock(100);
+                try
+                {
+                    this.OrdersOnTables--;
+                    Interlocked.Increment(ref reads);
+                }
+                finally
+                {
+                    rwl.ReleaseReaderLock();
+                }
+            }
+            catch (Exception)
+            {
+                // The reader lock request timed out.
+                Interlocked.Increment(ref readerTimeouts);
+            }
+            
             this.RefreshInformations();
         }
 
         private void OnNewTableOrder(object sender, NewTableOrderEventArgs e)
         {
-            this.OrdersOnTables++;
+            try
+            {
+                rwl.AcquireReaderLock(100);
+                try
+                {
+                    this.OrdersOnTables++;
+                    Interlocked.Increment(ref reads);
+                }
+                finally
+                {
+                    rwl.ReleaseReaderLock();
+                }
+            }
+            catch (Exception)
+            {
+                // The reader lock request timed out.
+                Interlocked.Increment(ref readerTimeouts);
+            }
         }
 
         public event GetClientEventHandler GetClientEvent;
