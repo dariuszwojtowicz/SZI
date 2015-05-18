@@ -75,8 +75,8 @@
 
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
-            this.clientsQueueTreeRoot = sam.GetTree("C:\\Users\\Maciej\\Desktop\\client.txt");
-            this.ordersQueueTreeRoot = sam.GetTree("C:\\Users\\Maciej\\Desktop\\order.txt");
+            this.clientsQueueTreeRoot = sam.GetTree("..\\..\\Data\\client.txt");
+            this.ordersQueueTreeRoot = sam.GetTree("..\\..\\Data\\order.txt");
         }
 
         private void InitTableWorkers()
