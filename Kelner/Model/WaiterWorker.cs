@@ -365,7 +365,7 @@
             {
                 return string.Format(
                     "Liczba zamówień: {0}\nWolnych: {1}\nBrudnych: {2}",
-                    this.tableWorkers.Count(t => t.Order != null && t.Order.OrderState == Order.State.New),
+                    this.OrdersOnTables,
                     this.tableWorkers.Count(t => t.IsFree),
                     this.tableWorkers.Count(t => t.IsDirty));
 ;
@@ -664,6 +664,7 @@
             if (this.NewOrderDecision())
             {
                 var waiterActions = this.GoToPoint(args.TableX + 1, args.TableY);
+                this.OrdersOnTables--;
                 MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
                 this.OnMoveWaiter(e);
                 Debug.WriteLine("Przyjąłem zamówienie");
