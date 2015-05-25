@@ -116,7 +116,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Data\E.bmp" />
+    <Resource Include="Data\K.bmp" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Data\client.txt" />
     <Resource Include="Data\order.txt" />

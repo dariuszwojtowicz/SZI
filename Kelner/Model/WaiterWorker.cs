@@ -5,6 +5,7 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
+    using System.Windows.Media.Imaging;
 
     using Kelner.Algorithm;
     using Kelner.ViewModel;
@@ -41,6 +42,8 @@
 
         private int ordersOnTables;
 
+        private BitmapImage kitchenImage;
+
         private static ReaderWriterLock rwl;
 
         public WaiterWorker()
@@ -73,6 +76,7 @@
 
             this.CreateSections();
 
+            this.KitchenImage = new BitmapImage(new Uri("..\\..\\Data\\E.bmp", UriKind.Relative));
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
             this.clientsQueueTreeRoot = sam.GetTree("..\\..\\Data\\client.txt");
@@ -98,6 +102,20 @@
         public Section[][] RestaurantSections { get; set; }
 
         public State State { get; set; }
+
+        public BitmapImage KitchenImage
+        {
+            get
+            {
+                return this.kitchenImage;
+            }
+
+            set
+            {
+                this.kitchenImage = value;
+                this.RaisePropertyChanged("KitchenImage");
+            }
+        }
 
         public List<WaiterAction> GoToPoint(int x, int y)
         {
@@ -315,6 +333,20 @@
             set
             {
                 this.doneOrdersOnKitchen = value;
+
+                if (value == 0)
+                {
+                    var newImage = new BitmapImage(new Uri("..\\..\\Data\\E.bmp", UriKind.Relative));
+                    newImage.Freeze(); // -> to prevent error: "Must create DependencySource on same Thread as the DependencyObject"
+                    this.KitchenImage = newImage;
+                }
+                else
+                {
+                    var newImage = new BitmapImage(new Uri("..\\..\\Data\\K.bmp", UriKind.Relative));
+                    newImage.Freeze(); // -> to prevent error: "Must create DependencySource on same Thread as the DependencyObject"
+                    this.KitchenImage = newImage;
+                }
+
                 this.RaisePropertyChanged("DoneOrdersOnKitchen");
                 this.RaisePropertyChanged("InformationAboutKitchen");
             }
