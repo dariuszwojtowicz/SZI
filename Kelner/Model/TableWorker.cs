@@ -10,12 +10,12 @@
 
         private bool shouldStop;
 
-        public TableWorker(int x, int y)
+        public TableWorker(int x, int y, int tableNumber)
         {
             this.thread = new Thread(this.TableWorkerFunc);
             this.IsFree = true;
             this.IsDirty = false;
-            this.Number = 1;
+            this.Number = tableNumber;
 
             this.X = x;
             this.Y = y;
@@ -82,7 +82,7 @@
                     {
                         Thread.Sleep(1000);
                         this.CreateNewOrder();
-                        NewTableOrderEventArgs e = new NewTableOrderEventArgs(this.X, this.Y);
+                        NewTableOrderEventArgs e = new NewTableOrderEventArgs(this.X, this.Y, this.Number);
                         this.OnNewTableOrder(e);
                     }
                     else
@@ -94,7 +94,7 @@
                             this.IsDirty = true;
                             this.IsFree = true;
                             this.Order = null;
-                            ClientOutEventArgs e = new ClientOutEventArgs(this.X, this.Y);
+                            ClientOutEventArgs e = new ClientOutEventArgs(this.X, this.Y, this.Number);
                             this.OnClientOutEvent(e);
                         }
                     }
@@ -114,10 +114,13 @@
 
         public int TableY { get; set; }
 
-        public NewTableOrderEventArgs(int x, int y)
+        public int TableNumber { get; set; }
+
+        public NewTableOrderEventArgs(int x, int y, int tableNumber)
         {
             this.TableX = x;
             this.TableY = y;
+            this.TableNumber = tableNumber;
         }
 
     }
@@ -133,10 +136,13 @@
 
         public int TableY { get; set; }
 
-        public ClientOutEventArgs(int x, int y)
+        public int TableNumber { get; set; }
+
+        public ClientOutEventArgs(int x, int y, int tableNumber)
         {
             this.TableX = x;
             this.TableY = y;
+            this.TableNumber = tableNumber;
         }
 
     }

@@ -108,6 +108,7 @@
         {
             var newOrder = new Order { OrderState = Order.State.New, TableNumber = 2 };
             this.Waiter.WrittenOrders.Add(newOrder);
+
             this.Waiter.RefreshInformations();
         }
 

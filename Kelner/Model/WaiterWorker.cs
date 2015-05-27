@@ -93,11 +93,11 @@
         private void InitTableWorkers()
         {
             this.tableWorkers = new TableWorker[5];
-            this.tableWorkers[0] = new TableWorker(2, 2);
-            this.tableWorkers[1] = new TableWorker(2, 5);
-            this.tableWorkers[2] = new TableWorker(2, 8);
-            this.tableWorkers[3] = new TableWorker(7, 3);
-            this.tableWorkers[4] = new TableWorker(7, 6);
+            this.tableWorkers[0] = new TableWorker(2, 2,1);
+            this.tableWorkers[1] = new TableWorker(2, 5,2);
+            this.tableWorkers[2] = new TableWorker(2, 8,3);
+            this.tableWorkers[3] = new TableWorker(7, 3,4);
+            this.tableWorkers[4] = new TableWorker(7, 6,5);
 
             foreach (var tableWorker in this.tableWorkers)
             {
@@ -771,6 +771,11 @@
                 MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
                 this.OnMoveWaiter(e);
                 Debug.WriteLine("Przyjąłem zamówienie");
+
+                var newOrder = new Order { OrderState = Order.State.New, TableNumber = args.TableNumber };
+                this.WrittenOrders.Add(newOrder);
+                this.GiveOrdersToKitchen();
+                this.RefreshInformations();
             }
             else
             {
