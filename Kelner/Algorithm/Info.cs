@@ -92,7 +92,7 @@ public class WalkingAStar
             }
             else
             {
-                return null;
+                return actions;
             }
 
             state = newState.State;

@@ -42,15 +42,22 @@
 
         private int ordersOnTables;
 
+        private bool newOrdersToGetFromKitchen;
+
         private BitmapImage kitchenImage;
 
         private static ReaderWriterLock rwl;
+        private NeuralBackProp neuralBackProp;
 
         public WaiterWorker()
         {
+            neuralBackProp = new NeuralBackProp();
+
             rwl = new ReaderWriterLock();
             this.WrittenOrders = new List<Order>();
             this.DoneOrdersOnHands = new List<Order>();
+
+            this.NewOrdersToGetFromKitchen = false;
 
             this.kitchenWorker = new KitchenWorker();
             this.kitchenWorker.NewMealEvent += this.OnNewMealFromKitchenWorker;
@@ -76,7 +83,7 @@
 
             this.CreateSections();
 
-            this.KitchenImage = new BitmapImage(new Uri("..\\..\\Data\\E.bmp", UriKind.Relative));
+            this.KitchenImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
             this.clientsQueueTreeRoot = sam.GetTree("..\\..\\Data\\client.txt");
@@ -308,6 +315,20 @@
             }
         }
 
+         private bool NewOrdersToGetFromKitchen
+        {
+            get
+            {
+                return this.newOrdersToGetFromKitchen;
+            }
+
+            set
+            {
+                this.newOrdersToGetFromKitchen = value;
+
+            }
+        }
+
         public int OrdersIsProgressOnKitchen
         {
             get
@@ -334,18 +355,34 @@
             {
                 this.doneOrdersOnKitchen = value;
 
-                if (value == 0)
+                BitmapImage newImage = null;
+
+                switch (value)
                 {
-                    var newImage = new BitmapImage(new Uri("..\\..\\Data\\E.bmp", UriKind.Relative));
-                    newImage.Freeze(); // -> to prevent error: "Must create DependencySource on same Thread as the DependencyObject"
-                    this.KitchenImage = newImage;
+                    case 0:
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+                        break;
+                    case 1:
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\J.bmp", UriKind.Relative));
+                        break;
+                    case 2:
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\D.bmp", UriKind.Relative));
+                        break;
+                    case 3:
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\T.bmp", UriKind.Relative));
+                        break;
+                    case 4:
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\C.bmp", UriKind.Relative));
+                        break;
+                    case 5:
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\P.bmp", UriKind.Relative));
+                        break;
+                    default:
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+                        break;
                 }
-                else
-                {
-                    var newImage = new BitmapImage(new Uri("..\\..\\Data\\K.bmp", UriKind.Relative));
-                    newImage.Freeze(); // -> to prevent error: "Must create DependencySource on same Thread as the DependencyObject"
-                    this.KitchenImage = newImage;
-                }
+                newImage.Freeze(); // -> to prevent error: "Must create DependencySource on same Thread as the DependencyObject"
+                this.KitchenImage = newImage;
 
                 this.RaisePropertyChanged("DoneOrdersOnKitchen");
                 this.RaisePropertyChanged("InformationAboutKitchen");
@@ -446,6 +483,39 @@
 
                     this.DoneOrdersOnKitchen = eventArgs.DoneMealCount;
                     this.OrdersIsProgressOnKitchen = eventArgs.OrdersInProgressCount;
+
+                    String readLetter = neuralBackProp.ReadLetter(this.KitchenImage);
+                    int number = 0;
+                    switch (readLetter)
+                    {
+                        case "J":
+                            number = 1;
+                            break;
+                        case "D":
+                            number = 2;
+                            break;
+                        case "T":
+                            number = 3;
+                            break;
+                        case "C":
+                            number = 4;
+                            break;
+                        case "P":
+                            number = 5;
+                            break;
+                        default:
+                            number = 0;
+                            break;
+                    }
+
+                    Debug.WriteLine("Widzę literę " + readLetter +", więc na kuchni jest " + number + " zamówienie(a)");
+
+                    if (number > 0)
+                    {
+                        var waiterActions = this.GoToPoint(9, 1);
+                        MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
+                        this.OnMoveWaiter(e);
+                    }
                     Interlocked.Increment(ref reads);
                 }
                 finally
@@ -495,6 +565,7 @@
             else
             {
                 Debug.WriteLine("Nie przyjąłem klienta");
+
             }
         }
 
