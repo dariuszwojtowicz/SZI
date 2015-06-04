@@ -55,13 +55,21 @@ namespace Kelner.Algorithm
 
         public List<Node> GetPath()
         {
+            var path = this.GetParentsPath();
+            path.Reverse();
+
+            return path;
+        }
+
+        public List<Node> GetParentsPath()
+        {
             if (this.ParentNode == null)
             {
                 return new List<Node>();
             }
 
             var path = new List<Node> { this };
-            path.AddRange(this.ParentNode.GetPath());
+            path.AddRange(this.ParentNode.GetParentsPath());
 
             return path;
         } 
