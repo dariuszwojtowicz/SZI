@@ -124,12 +124,23 @@
             }
         }
 
-        public List<WaiterAction> GoToPoint(int x, int y)
+        public List<WaiterAction> GoToPointOld(int x, int y)
         {
             var targetState = new State { X = x, Y = y, Direction = Direction.South };
 
-            var walkAlgorithm = new WalkingAStar();
+            var walkAlgorithm = new WalkingAStarOld();
             var waiterActions = walkAlgorithm.GetPath(this.State, targetState, this.RestaurantSections);
+
+            return waiterActions;
+        }
+
+        public List<Node> GoToPoint(int x, int y)
+        {
+            var currentNode = new Node { X = this.State.X, Y = this.State.Y };
+            var targetNode = new Node { X = x, Y = y};
+
+            var walkAlgorithm = new WalkingAStar();
+            var waiterActions = walkAlgorithm.GetPath(currentNode, targetNode, this.RestaurantSections);
 
             return waiterActions;
         }
@@ -794,12 +805,12 @@
 
         public class MoveWaiterEventArgs
         {
-            public MoveWaiterEventArgs(List<WaiterAction> waiterActions)
+            public MoveWaiterEventArgs(List<Node> waiterActions)
             {
                 this.WaiterActions = waiterActions;
             }
             
-            public List<WaiterAction> WaiterActions { get; set; }
+            public List<Node> WaiterActions { get; set; }
         }
     }
 }

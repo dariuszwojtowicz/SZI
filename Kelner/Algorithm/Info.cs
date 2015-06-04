@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Kelner.Algorithm;
 using Kelner.Model;
 
 public enum StepDirection
@@ -51,11 +50,11 @@ public class StateNode
     public StepDirection StepDirection { get; set; }
 }
 
-public class WalkingAStar
+public class WalkingAStarOld
 {
     private List<State> historyOfStates;
 
-    public WalkingAStar()
+    public WalkingAStarOld()
     {
         this.historyOfStates = new List<State>();
     }

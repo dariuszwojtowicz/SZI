@@ -143,12 +143,24 @@
         private void GoToPoint()
         {
             var waiterActions = this.Waiter.GoToPoint(this.TargetX, this.TargetY);
+
             this.MoveWaiter(waiterActions);
         }
 
         private void OnMoveWaiter(object sender, WaiterWorker.MoveWaiterEventArgs eventArgs)
         {
             this.MoveWaiter(eventArgs.WaiterActions);
+        }
+
+        private void MoveWaiter(List<Node> waiterActions)
+        {
+            waiterActions.Reverse();
+            foreach (var waiterAction in waiterActions)
+            {
+                this.Waiter.State = new State { X = waiterAction.X, Y = waiterAction.Y, Direction = Direction.East };
+                this.Waiter.CreateSections();
+                this.CreateSections();
+            }
         }
 
         private void MoveWaiter(List<WaiterAction> waiterActions)
