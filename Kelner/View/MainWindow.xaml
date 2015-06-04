@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Kelner.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="600"
+        Title="MainWindow" Height="370" Width="800"
         xmlns:vm ="clr-namespace:Kelner.ViewModel"
         DataContext="{DynamicResource MainWindowViewModel}">
 
@@ -16,28 +16,76 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         
-        <StackPanel Grid.Column="0" Background="LightGray">
-            <TextBlock Text="Aktualne dane:       " FontSize="16"/>
-            <TextBlock Text="{Binding FirstSectionData}" FontSize="14"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Column="0" Grid.Row="0" Background="LightGray">
+            <TextBlock Text=" Kuchnia:" FontSize="16"/>
+            <TextBlock Text="{Binding Waiter.InformationAboutKitchen}" FontSize="14"/>
+            <TextBlock Text=" Stolik:" FontSize="16"/>
+            <TextBlock Text="{Binding Waiter.InformationAboutTable}" FontSize="14"/>
         </StackPanel>
 
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <Grid Grid.Column="1" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             
-            <TextBlock Text="{Binding WaiterName}" FontSize="18" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Przedstaw się" Command="{Binding SayHelloCommand}" Margin="5"/>
-                <Button Content="Odśwież dane" Command="{Binding RefreshDataCommand}" Margin="5"/>
-            </StackPanel>
+            <ItemsControl Grid.Column="0" ItemsSource="{Binding Sections}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background="Aquamarine" Width="250" Height="250"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Fill="{Binding Brush}" Width="25" Height="25"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+            
+            <Image Grid.Column="1" Source="{Binding Waiter.KitchenImage}" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Grid>
 
-        <StackPanel Grid.Column="2" Background="LightGray">
-            <TextBlock Text="  Jakieś inne dane:" FontSize="16"/>
-            <TextBlock Text="  - Inne dane 18" FontSize="14"/>
+        <StackPanel Grid.Column="2" Grid.Row="0" Background="LightGray">
+            <TextBlock Text=" Kelner:" FontSize="16"/>
+            <TextBlock Text="{Binding Waiter.InformationAboutWaiter}" FontSize="14"/>
+            <TextBlock Text=" Klienci:" FontSize="16"/>
+            <TextBlock Text="{Binding Waiter.InformationAboutClients}" FontSize="14"/>
         </StackPanel>
+        
+        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
+
+
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Start" Command="{Binding StartWaiterWorkCommand}" Margin="5"/>
+                    <Button Content="Stop" Command="{Binding StopWaiterWorkCommand}" Margin="5"/>
+                    <Button Content="Przyjmij klientów" Command="{Binding GetClientFromQueueCommand}" Margin="5"/>
+                    <Button Content="Wyczyść stół" Command="{Binding CleanTableCommand}" Margin="5"/>
+                    <TextBox Text="{Binding TargetX}" Width="50"/>
+                    <TextBox Text="{Binding TargetY}" Width="50"/>
+                    <Button Content=" Idź " Command="{Binding GoToPointCommand}" Margin="5"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Zapisz zamówienie" Command="{Binding WriteNewOrderCommand}" Margin="5"/>
+                    <Button Content="Złóż zamówienia w kuchnii" Command="{Binding GiveWrittenOrdersToKitchenCommand}" Margin="5"/>
+                    <Button Content="Weź zamówienia z kuchnii" Command="{Binding TakeOrderFromKitchenCommand}" Margin="5"/>
+                    <Button Content="Wydaj zamówienia" Command="{Binding GiveOrdersToClientsCommand}" Margin="5"/>
+                    
+                </StackPanel>
+            </StackPanel>
+        </Grid>
 
     </Grid>
 </Window>

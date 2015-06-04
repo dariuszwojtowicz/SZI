@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -47,6 +48,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="xpidea.neuro.net">
+      <HintPath>.\xpidea.neuro.net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -58,12 +62,34 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Algorithm\Info.cs" />
+    <Compile Include="Algorithm\DecisionTree.cs" />
+    <Compile Include="Algorithm\NeuralBackProp.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Algorithm\NeuralNet.cs" />
+    <Compile Include="Algorithm\OutcomeTreeAttribute.cs" />
+    <Compile Include="Algorithm\PossibleValueCollection.cs" />
+    <Compile Include="Algorithm\RawDataSource.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Algorithm\TreeAttribute.cs" />
+    <Compile Include="Algorithm\TreeAttributeCollection.cs" />
+    <Compile Include="Algorithm\TreeNode.cs" />
+    <Compile Include="Algorithm\TreeNodeCollection.cs" />
+    <Compile Include="Algorithm\Walking.cs" />
+    <Compile Include="Algorithm\WalkingAStar.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\Client.cs" />
+    <Compile Include="Model\ClientsQueueWorker.cs" />
+    <Compile Include="Model\KitchenWorker.cs" />
+    <Compile Include="Model\Order.cs" />
     <Compile Include="Model\Section.cs" />
-    <Compile Include="Model\Waiter.cs" />
+    <Compile Include="Model\TableWorker.cs" />
+    <Compile Include="Model\WaiterWorker.cs" />
+    <Compile Include="Model\WaiterWorker_Methods.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -98,6 +124,38 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Data\client.txt" />
+    <Resource Include="Data\order.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Data\ImageSet\A.bmp" />
+    <Resource Include="Data\ImageSet\B.bmp" />
+    <Resource Include="Data\ImageSet\C.bmp" />
+    <Resource Include="Data\ImageSet\D.bmp" />
+    <Resource Include="Data\ImageSet\E.bmp" />
+    <Resource Include="Data\ImageSet\F.bmp" />
+    <Resource Include="Data\ImageSet\G.bmp" />
+    <Resource Include="Data\ImageSet\H.bmp" />
+    <Resource Include="Data\ImageSet\I.bmp" />
+    <Resource Include="Data\ImageSet\J.bmp" />
+    <Resource Include="Data\ImageSet\K.bmp" />
+    <Resource Include="Data\ImageSet\L.bmp" />
+    <Resource Include="Data\ImageSet\M.bmp" />
+    <Resource Include="Data\ImageSet\N.bmp" />
+    <Resource Include="Data\ImageSet\O.bmp" />
+    <Resource Include="Data\ImageSet\P.bmp" />
+    <Resource Include="Data\ImageSet\Q.bmp" />
+    <Resource Include="Data\ImageSet\R.bmp" />
+    <Resource Include="Data\ImageSet\S.bmp" />
+    <Resource Include="Data\ImageSet\T.bmp" />
+    <Resource Include="Data\ImageSet\U.bmp" />
+    <Resource Include="Data\ImageSet\V.bmp" />
+    <Resource Include="Data\ImageSet\W.bmp" />
+    <Resource Include="Data\ImageSet\X.bmp" />
+    <Resource Include="Data\ImageSet\Y.bmp" />
+    <Resource Include="Data\ImageSet\Z.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
