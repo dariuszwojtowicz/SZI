@@ -36,6 +36,7 @@ namespace Kelner.Algorithm
 		{
 
             trainingPatterns = CreateTrainingPatterns();
+            //Tworzenie sieci (liczba neuronow na każdej z warstw)
             backpropNetwork = new NeuralNet(new int[3] { aMatrixDim * aMatrixDim, (aMatrixDim * aMatrixDim + aCharsCount) / 2, aCharsCount });
 
             if (backpropNetwork == null)
@@ -111,7 +112,7 @@ namespace Kelner.Algorithm
 					int x = (int)((i/xStep));
 					int y = (int)(j/yStep);
 					Color c = aSrc.GetPixel(i,j);
-					result[y*x+y]+=Math.Sqrt(c.R*c.R+c.B*c.B+c.G*c.G); //Convert to BW, I guess I can use B component of Alpha color space too...
+					result[y*x+y]+=Math.Sqrt(c.R*c.R+c.B*c.B+c.G*c.G);
 				}
 			return  Scale(result);
 		}
