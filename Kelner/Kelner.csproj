@@ -77,6 +77,7 @@
     <Compile Include="Algorithm\TreeNode.cs" />
     <Compile Include="Algorithm\TreeNodeCollection.cs" />
     <Compile Include="Algorithm\Walking.cs" />
+    <Compile Include="Algorithm\WalkingAStar.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

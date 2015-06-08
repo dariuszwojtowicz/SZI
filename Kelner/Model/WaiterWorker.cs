@@ -124,12 +124,23 @@
             }
         }
 
-        public List<WaiterAction> GoToPoint(int x, int y)
+        public List<WaiterAction> GoToPointOld(int x, int y)
         {
             var targetState = new State { X = x, Y = y, Direction = Direction.South };
 
-            var walkAlgorithm = new WalkingAStar();
+            var walkAlgorithm = new WalkingAStarOld();
             var waiterActions = walkAlgorithm.GetPath(this.State, targetState, this.RestaurantSections);
+
+            return waiterActions;
+        }
+
+        public List<Node> GoToPoint(int x, int y)
+        {
+            var currentNode = new Node { X = this.State.X, Y = this.State.Y };
+            var targetNode = new Node { X = x, Y = y};
+
+            var walkAlgorithm = new WalkingAStar();
+            var waiterActions = walkAlgorithm.GetPath(currentNode, targetNode, this.RestaurantSections);
 
             return waiterActions;
         }
@@ -513,8 +524,7 @@
                     if (number > 0)
                     {
                         var waiterActions = this.GoToPoint(9, 1);
-                        MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
-                        this.OnMoveWaiter(e);
+                        this.MoveWaiter(waiterActions);
                     }
                     Interlocked.Increment(ref reads);
                 }
@@ -557,15 +567,24 @@
             if (this.NewClientDecision())
             {
                 var waiterActions = this.GoToPoint(9, 8);
-                MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
-                this.OnMoveWaiter(e);
+                this.MoveWaiter(waiterActions);
+
                 Debug.WriteLine("Przyjąłem klienta");
                 this.GetClientFromQueue();
             }
             else
             {
                 Debug.WriteLine("Nie przyjąłem klienta");
+            }
+        }
 
+        private void MoveWaiter(List<Node> waiterActions)
+        {
+            foreach (var waiterAction in waiterActions)
+            {
+                MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterAction);
+                this.OnMoveWaiter(e);
+                Thread.Sleep(300);
             }
         }
 
@@ -768,8 +787,7 @@
             {
                 var waiterActions = this.GoToPoint(args.TableX + 1, args.TableY);
                 this.OrdersOnTables--;
-                MoveWaiterEventArgs e = new MoveWaiterEventArgs(waiterActions);
-                this.OnMoveWaiter(e);
+                this.MoveWaiter(waiterActions);
                 Debug.WriteLine("Przyjąłem zamówienie");
 
                 var newOrder = new Order { OrderState = Order.State.New, TableNumber = args.TableNumber };
@@ -794,12 +812,12 @@
 
         public class MoveWaiterEventArgs
         {
-            public MoveWaiterEventArgs(List<WaiterAction> waiterActions)
+            public MoveWaiterEventArgs(Node waiterAction)
             {
-                this.WaiterActions = waiterActions;
+                this.WaiterAction = waiterAction;
             }
             
-            public List<WaiterAction> WaiterActions { get; set; }
+            public Node WaiterAction { get; set; }
         }
     }
 }

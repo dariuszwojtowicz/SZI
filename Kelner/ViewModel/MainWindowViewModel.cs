@@ -143,107 +143,28 @@
         private void GoToPoint()
         {
             var waiterActions = this.Waiter.GoToPoint(this.TargetX, this.TargetY);
+
             this.MoveWaiter(waiterActions);
         }
 
         private void OnMoveWaiter(object sender, WaiterWorker.MoveWaiterEventArgs eventArgs)
         {
-            this.MoveWaiter(eventArgs.WaiterActions);
+            this.MoveWaiter(eventArgs.WaiterAction);
         }
 
-        private void MoveWaiter(List<WaiterAction> waiterActions)
+        private void MoveWaiter(List<Node> waiterActions)
         {
             foreach (var waiterAction in waiterActions)
             {
-                switch (waiterAction)
-                {
-                    case WaiterAction.GoForward:
-                        this.WaiterMoveForward();
-                        Debug.WriteLine("Krok do przodu");
-                        break;
-                    case WaiterAction.TurnLeft:
-                        this.WaiterTurnLeft();
-                        Debug.WriteLine("Obórt w lewo");
-                        break;
-                    case WaiterAction.TurnRight:
-                        this.WaiterTurnRight();
-                        Debug.WriteLine("Obrót w prawo");
-                        break;
-                }
+                this.MoveWaiter(waiterAction);
             }
+        }
 
+        private void MoveWaiter(Node waiterAction)
+        {
+            this.Waiter.State = new State { X = waiterAction.X, Y = waiterAction.Y, Direction = Direction.East };
             this.Waiter.CreateSections();
             this.CreateSections();
-        }
-
-        private void WaiterMoveForward()
-        {
-            var newState = new State { Direction = this.Waiter.State.Direction };
-            switch (this.Waiter.State.Direction)
-            {
-                case Direction.South:
-                    newState.X = this.Waiter.State.X;
-                    newState.Y = this.Waiter.State.Y + 1;
-                    break;
-                case Direction.West:
-                    newState.X = this.Waiter.State.X - 1;
-                    newState.Y = this.Waiter.State.Y;
-                    break;
-                case Direction.North:
-                    newState.X = this.Waiter.State.X;
-                    newState.Y = this.Waiter.State.Y - 1;
-                    break;
-                case Direction.East:
-                    newState.X = this.Waiter.State.X + 1;
-                    newState.Y = this.Waiter.State.Y;
-                    break;
-            }
-
-            this.Waiter.State = newState;
-        }
-
-        private void WaiterTurnLeft()
-        {
-            var newState = new State { X = this.Waiter.State.X, Y = this.Waiter.State.Y };
-            switch (this.Waiter.State.Direction)
-            {
-                case Direction.South:
-                    newState.Direction = Direction.East;
-                    break;
-                case Direction.East:
-                    newState.Direction = Direction.North;
-                    break;
-                case Direction.North:
-                    newState.Direction = Direction.West;
-                    break;
-                case Direction.West:
-                    newState.Direction = Direction.South;
-                    break;
-            }
-
-            this.Waiter.State = newState;
-        }
-
-        private void WaiterTurnRight()
-        {
-            var newState = new State { X = this.Waiter.State.X, Y = this.Waiter.State.Y };
-            switch (this.Waiter.State.Direction)
-            {
-                case Direction.South:
-                    newState.Direction = Direction.West;
-                    break;
-                case Direction.West:
-                    newState.Direction = Direction.North;
-                    break;
-                case Direction.North:
-                    newState.Direction = Direction.East;
-                    break;
-                case Direction.East:
-                    newState.Direction = Direction.South;
-                    break;
-            }
-
-            this.Waiter.State = newState;
         }
 
         private void CreateSections()
