@@ -46,6 +46,12 @@
 
         private BitmapImage kitchenImage;
 
+        private BitmapImage tableImage1;
+        private BitmapImage tableImage2;
+        private BitmapImage tableImage3;
+        private BitmapImage tableImage4;
+        private BitmapImage tableImage5;
+
         private static ReaderWriterLock rwl;
         private NeuralBackProp neuralBackProp;
 
@@ -83,7 +89,12 @@
 
             this.CreateSections();
 
-            this.KitchenImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+            this.KitchenImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\_.bmp", UriKind.Relative));
+            this.TableImage1 = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\W.bmp", UriKind.Relative));
+            this.TableImage2 = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\W.bmp", UriKind.Relative));
+            this.TableImage3 = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\W.bmp", UriKind.Relative));
+            this.TableImage4 = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\W.bmp", UriKind.Relative));
+            this.TableImage5 = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\W.bmp", UriKind.Relative));
 
             DecisionTreeImplementation sam = new DecisionTreeImplementation();
             this.clientsQueueTreeRoot = sam.GetTree("..\\..\\Data\\client.txt");
@@ -121,6 +132,73 @@
             {
                 this.kitchenImage = value;
                 this.RaisePropertyChanged("KitchenImage");
+            }
+        }
+
+        public BitmapImage TableImage1
+        {
+            get
+            {
+                return this.tableImage1;
+            }
+
+            set
+            {
+                this.tableImage1 = value;
+                this.RaisePropertyChanged("TableImage1");
+            }
+        }
+
+        public BitmapImage TableImage2
+        {
+            get
+            {
+                return this.tableImage2;
+            }
+
+            set
+            {
+                this.tableImage2 = value;
+                this.RaisePropertyChanged("TableImage2");
+            }
+        }
+        public BitmapImage TableImage3
+        {
+            get
+            {
+                return this.tableImage3;
+            }
+
+            set
+            {
+                this.tableImage3 = value;
+                this.RaisePropertyChanged("TableImage3");
+            }
+        }
+        public BitmapImage TableImage4
+        {
+            get
+            {
+                return this.tableImage4;
+            }
+
+            set
+            {
+                this.tableImage4 = value;
+                this.RaisePropertyChanged("TableImage4");
+            }
+        }
+        public BitmapImage TableImage5
+        {
+            get
+            {
+                return this.tableImage5;
+            }
+
+            set
+            {
+                this.tableImage5 = value;
+                this.RaisePropertyChanged("TableImage5");
             }
         }
 
@@ -274,9 +352,36 @@
                     if (tableWorker.IsFree)
                     {
                         tableWorker.IsFree = false;
+
+
+
+                        BitmapImage newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+                        newImage.Freeze();
+                        switch (tableWorker.Number)
+                        {
+                            case 1:
+                                this.TableImage1 = newImage;
+                                break;
+                            case 2:
+                                this.TableImage2 = newImage;
+                                break;
+                            case 3:
+                                this.TableImage3 = newImage;
+                                break;
+                            case 4:
+                                this.TableImage4 = newImage;
+                                break;
+                            case 5:
+                                this.TableImage5 = newImage;
+                                break;
+                            default:
+                                break;
+                        }
+
                         break;
                     }
                 }
+
                 this.RefreshInformations();
             }
         }
@@ -371,25 +476,25 @@
                 switch (value)
                 {
                     case 0:
-                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\_.bmp", UriKind.Relative));
                         break;
                     case 1:
-                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\J.bmp", UriKind.Relative));
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\1.bmp", UriKind.Relative));
                         break;
                     case 2:
-                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\D.bmp", UriKind.Relative));
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\2.bmp", UriKind.Relative));
                         break;
                     case 3:
-                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\T.bmp", UriKind.Relative));
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\3.bmp", UriKind.Relative));
                         break;
                     case 4:
-                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\C.bmp", UriKind.Relative));
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\4.bmp", UriKind.Relative));
                         break;
                     case 5:
-                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\P.bmp", UriKind.Relative));
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\5.bmp", UriKind.Relative));
                         break;
                     default:
-                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+                        newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\_.bmp", UriKind.Relative));
                         break;
                 }
                 newImage.Freeze(); // -> to prevent error: "Must create DependencySource on same Thread as the DependencyObject"
@@ -499,19 +604,19 @@
                     int number = 0;
                     switch (readLetter)
                     {
-                        case "J":
+                        case "1":
                             number = 1;
                             break;
-                        case "D":
+                        case "2":
                             number = 2;
                             break;
-                        case "T":
+                        case "3":
                             number = 3;
                             break;
-                        case "C":
+                        case "4":
                             number = 4;
                             break;
-                        case "P":
+                        case "5":
                             number = 5;
                             break;
                         default:
@@ -519,7 +624,7 @@
                             break;
                     }
 
-                    Debug.WriteLine("Widzę literę " + readLetter +", więc na kuchni jest " + number + " zamówienie(a)");
+                    Debug.WriteLine("Widzę cyferkę " + readLetter +", więc na kuchni jest " + number + " zamówienie(a)");
 
                     if (number > 0)
                     {

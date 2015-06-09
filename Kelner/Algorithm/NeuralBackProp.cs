@@ -24,7 +24,6 @@ namespace Kelner.Algorithm
 
 	
 		public static int aMatrixDim = 10;
-        public String alphabet = "A B C D E F G H I J K L M O P Q R S T U W V X Y Z";
 		public static byte aFirstChar =  (byte)'A';
 		public static byte aLastChar = (byte)'z';
 		public static int aCharsCount = 26; //liczba liter + 1
@@ -36,7 +35,7 @@ namespace Kelner.Algorithm
 		{
 
             trainingPatterns = CreateTrainingPatterns();
-            backpropNetwork = new NeuralNet(new int[3] { aMatrixDim * aMatrixDim, (aMatrixDim * aMatrixDim + aCharsCount) / 2, aCharsCount });
+            backpropNetwork = new NeuralNet(new int[3] { aMatrixDim * aMatrixDim, (aMatrixDim * aMatrixDim + aCharsCount + 9) / 2, aCharsCount + 9 });
 
             if (backpropNetwork == null)
             {
@@ -56,15 +55,25 @@ namespace Kelner.Algorithm
 		
 		public PatternsCollection CreateTrainingPatterns()
 		{			 
-			PatternsCollection result = new PatternsCollection(aCharsCount, aMatrixDim * aMatrixDim, aCharsCount);
+			PatternsCollection result = new PatternsCollection(aCharsCount + 9, aMatrixDim * aMatrixDim, aCharsCount + 9);
 			for (int i= 0; i<aCharsCount; i++)
 			{
-     
+                Console.Write("{0} - {1}", aFirstChar + i, Convert.ToChar(aFirstChar + i));
 				double[] aBitMatrix = ImageToDoubleArray(Convert.ToChar(aFirstChar + i), aMatrixDim, 0);
 				for (int j = 0; j<aMatrixDim * aMatrixDim; j++) 
 					result[i].Input[j] = aBitMatrix[j];
-				result[i].Output[i] = 1;				
+				result[i].Output[i] = 1;
 			}
+
+            aFirstChar = 23;
+            for (int i = 26; i < 35; i++)
+            {
+                Console.Write("{0} - {1}", i + aFirstChar, Convert.ToChar(aFirstChar + i));
+                double[] aBitMatrix = ImageToDoubleArray(Convert.ToChar(aFirstChar +i), aMatrixDim, 0);
+                for (int j = 0; j < aMatrixDim * aMatrixDim; j++)
+                    result[i].Input[j] = aBitMatrix[j];
+                result[i].Output[i] = 1;
+            }
 			return result;
 		}
 

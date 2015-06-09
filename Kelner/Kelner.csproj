@@ -157,6 +157,20 @@
     <Resource Include="Data\ImageSet\Y.bmp" />
     <Resource Include="Data\ImageSet\Z.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Data\ImageSet\1.bmp" />
+    <Resource Include="Data\ImageSet\2.bmp" />
+    <Resource Include="Data\ImageSet\3.bmp" />
+    <Resource Include="Data\ImageSet\4.bmp" />
+    <Resource Include="Data\ImageSet\5.bmp" />
+    <Resource Include="Data\ImageSet\6.bmp" />
+    <Resource Include="Data\ImageSet\7.bmp" />
+    <Resource Include="Data\ImageSet\8.bmp" />
+    <Resource Include="Data\ImageSet\9.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Data\ImageSet\_.bmp" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
