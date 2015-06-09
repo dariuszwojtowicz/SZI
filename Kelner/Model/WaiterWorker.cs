@@ -525,6 +525,24 @@
                     {
                         var waiterActions = this.GoToPoint(9, 1);
                         this.MoveWaiter(waiterActions);
+
+                        this.DoneOrdersOnKitchen = 0;
+                        var i = eventArgs.DoneMealCount;
+                        foreach (var tableWorker in this.tableWorkers)
+                        {
+                            if (!tableWorker.IsFree && !tableWorker.IsDirty)
+                            {
+                                waiterActions = this.GoToPoint(tableWorker.X + 1, tableWorker.Y);
+                                this.MoveWaiter(waiterActions);
+                                Debug.WriteLine("Wydaje zamówienie na stolik: " + tableWorker.Number);
+                            }
+
+                            i--;
+                            if (i <= 0)
+                            {
+                                break;
+                            }
+                        }
                     }
                     Interlocked.Increment(ref reads);
                 }

@@ -83,6 +83,7 @@
                             var ordersInProgressCount = this.OrdersInProgress.Count;
                             NewMealEventArgs e = new NewMealEventArgs(doneOrdersCount, ordersInProgressCount);
                             this.OnNewMealAppeared(e);
+                            this.DoneOrders = new List<Order>();
                         }
                     }
                 }
