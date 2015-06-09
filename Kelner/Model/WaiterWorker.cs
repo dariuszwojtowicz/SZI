@@ -574,6 +574,7 @@
             }
             else
             {
+
                 Debug.WriteLine("Nie przyjąłem klienta");
             }
         }

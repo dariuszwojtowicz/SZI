@@ -14,6 +14,13 @@
 
     public class MainWindowViewModel : ViewModelBase
     {
+        private static ReaderWriterLock rwl;
+
+        static int readerTimeouts = 0;
+        static int writerTimeouts = 0;
+        static int reads = 0;
+        static int writes = 0;
+
         private string waiterName;
 
         private string firstSectionData;
@@ -25,6 +32,7 @@
         public MainWindowViewModel()
         {
             this.Waiter = new WaiterWorker();
+            rwl = new ReaderWriterLock();
             this.StartWaiterWorkCommand = new RelayCommand(this.StartWork);
             this.StopWaiterWorkCommand = new RelayCommand(this.StopWork);
             this.WriteNewOrderCommand = new RelayCommand(this.WriteNewOrder);
@@ -169,16 +177,33 @@
 
         private void CreateSections()
         {
-            this.Sections = new ObservableCollection<Section>();
-
-            for (int i = 0; i < 10; i++)
+            try
             {
-                for (int j = 0; j < 10; j++)
+                rwl.AcquireReaderLock(100);
+                try
                 {
-                    Section section = this.Waiter.RestaurantSections[i][j];
+                    this.Sections = new ObservableCollection<Section>();
 
-                    this.Sections.Add(section);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        for (int j = 0; j < 10; j++)
+                        {
+                            Section section = this.Waiter.RestaurantSections[i][j];
+
+                            this.Sections.Add(section);
+                        }
+                    }
+                    Interlocked.Increment(ref reads);
                 }
+                finally
+                {
+                    rwl.ReleaseReaderLock();
+                }
+            }
+            catch (Exception)
+            {
+                // The reader lock request timed out.
+                Interlocked.Increment(ref readerTimeouts);
             }
         }
     }
