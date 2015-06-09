@@ -68,22 +68,10 @@
 
             <StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Start" Command="{Binding StartWaiterWorkCommand}" Margin="5"/>
-                    <Button Content="Stop" Command="{Binding StopWaiterWorkCommand}" Margin="5"/>
-                    <Button Content="Przyjmij klientów" Command="{Binding GetClientFromQueueCommand}" Margin="5"/>
-                    <Button Content="Wyczyść stół" Command="{Binding CleanTableCommand}" Margin="5"/>
-                    <TextBox Text="{Binding TargetX}" Width="50"/>
-                    <TextBox Text="{Binding TargetY}" Width="50"/>
-                    <Button Content=" Idź " Command="{Binding GoToPointCommand}" Margin="5"/>
+                    <Button Content="Start" Command="{Binding StartWaiterWorkCommand}" Margin="5" Width="772" Height="51"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Zapisz zamówienie" Command="{Binding WriteNewOrderCommand}" Margin="5"/>
-                    <Button Content="Złóż zamówienia w kuchnii" Command="{Binding GiveWrittenOrdersToKitchenCommand}" Margin="5"/>
-                    <Button Content="Weź zamówienia z kuchnii" Command="{Binding TakeOrderFromKitchenCommand}" Margin="5"/>
-                    <Button Content="Wydaj zamówienia" Command="{Binding GiveOrdersToClientsCommand}" Margin="5"/>
-                    
-                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
             </StackPanel>
         </Grid>
 

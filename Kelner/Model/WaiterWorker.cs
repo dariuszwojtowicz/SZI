@@ -564,18 +564,22 @@
             
             this.RefreshInformations();
 
-            if (this.NewClientDecision())
+            while (true)
             {
-                var waiterActions = this.GoToPoint(9, 8);
-                this.MoveWaiter(waiterActions);
+                Thread.Sleep(1000 * 5);
+                if (this.NewClientDecision())
+                {
+                    var waiterActions = this.GoToPoint(9, 8);
+                    this.MoveWaiter(waiterActions);
 
-                Debug.WriteLine("Przyjąłem klienta");
-                this.GetClientFromQueue();
-            }
-            else
-            {
-
-                Debug.WriteLine("Nie przyjąłem klienta");
+                    Debug.WriteLine("Przyjąłem klienta");
+                    this.GetClientFromQueue();
+                    break;
+                }
+                else
+                {
+                    Debug.WriteLine("Nie przyjąłem klienta");
+                }
             }
         }
 
@@ -599,12 +603,12 @@
 #region checkvalue
                 if (currentTreeNode.Attribute == null)
                 {
-                    return false;
+                    return true;
                 }
 
                 if (string.IsNullOrEmpty(currentTreeNode.Attribute.ToString()))
                 {
-                    return false;
+                    return true;
                 }
 #endregion checkvalue
                 if (currentTreeNode.Attribute.ToString().Trim().ToLower() == "false")
@@ -623,7 +627,7 @@
                         parameter = this.ClientsQueueCount;
                         break;
                     case "waiting_time":
-                        parameter = this.WaitingTime();
+                        parameter = this.WaitingTime(); //Random
                         break;
                     case "order":
                         parameter = this.OrdersOnTables;
@@ -632,10 +636,10 @@
                         parameter = this.DoneOrdersOnKitchen;
                         break;
                     case "dirty":
-                        parameter = this.CheckDirtyTables();
+                        parameter = this.CheckDirtyTables(); //Random
                         break;
                     case "free":
-                        parameter = this.CheckFreeTables();
+                        parameter = this.tableWorkers.Count(t => t.IsFree);
                         break;
                 }
 
@@ -674,12 +678,12 @@
                 #region checkvalue
                 if (currentTreeNode.Attribute == null)
                 {
-                    return false;
+                    return true;
                 }
 
                 if (string.IsNullOrEmpty(currentTreeNode.Attribute.ToString()))
                 {
-                    return false;
+                    return true;
                 }
                 #endregion checkvalue
                 if (currentTreeNode.Attribute.ToString().Trim().ToLower() == "false")
@@ -710,7 +714,7 @@
                         parameter = this.CheckDirtyTables();
                         break;
                     case "free":
-                        parameter = this.CheckFreeTables();
+                        parameter = this.tableWorkers.Count(t => t.IsFree);
                         break;
                 }
 
@@ -784,21 +788,26 @@
                 Interlocked.Increment(ref readerTimeouts);
             }
 
-            if (this.NewOrderDecision())
+            while (true)
             {
-                var waiterActions = this.GoToPoint(args.TableX + 1, args.TableY);
-                this.OrdersOnTables--;
-                this.MoveWaiter(waiterActions);
-                Debug.WriteLine("Przyjąłem zamówienie");
+                Thread.Sleep(1000 * 5);
+                if (this.NewOrderDecision())
+                {
+                    var waiterActions = this.GoToPoint(args.TableX + 1, args.TableY);
+                    this.OrdersOnTables--;
+                    this.MoveWaiter(waiterActions);
+                    Debug.WriteLine("Przyjąłem zamówienie");
 
-                var newOrder = new Order { OrderState = Order.State.New, TableNumber = args.TableNumber };
-                this.WrittenOrders.Add(newOrder);
-                this.GiveOrdersToKitchen();
-                this.RefreshInformations();
-            }
-            else
-            {
-                Debug.WriteLine("Nie przyjąłem zamówienia");
+                    var newOrder = new Order { OrderState = Order.State.New, TableNumber = args.TableNumber };
+                    this.WrittenOrders.Add(newOrder);
+                    this.GiveOrdersToKitchen();
+                    this.RefreshInformations();
+                    break;
+                }
+                else
+                {
+                    Debug.WriteLine("Nie przyjąłem zamówienia");
+                }
             }
         }
 
