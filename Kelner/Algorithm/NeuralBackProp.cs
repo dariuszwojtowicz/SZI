@@ -120,7 +120,7 @@ namespace Kelner.Algorithm
 					int x = (int)((i/xStep));
 					int y = (int)(j/yStep);
 					Color c = aSrc.GetPixel(i,j);
-					result[y*x+y]+=Math.Sqrt(c.R*c.R+c.B*c.B+c.G*c.G); //Convert to BW, I guess I can use B component of Alpha color space too...
+					result[y*x+y]+=Math.Sqrt(c.R*c.R+c.B*c.B+c.G*c.G);
 				}
 			return  Scale(result);
 		}
