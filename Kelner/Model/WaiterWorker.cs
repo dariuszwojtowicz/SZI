@@ -394,7 +394,7 @@
                     var actions = this.GoToPoint(tableWorker.X + 1, tableWorker.Y);
                     this.MoveWaiter(actions);
 
-                    BitmapImage newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+                    BitmapImage newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\W.bmp", UriKind.Relative));
                     newImage.Freeze();
                     switch (tableWorker.Number)
                     {
@@ -764,7 +764,6 @@
 
                 if (!this.tableWorkers.Any(t => t.IsFree && !t.IsDirty))
                 {
-
                     return false;
                 }
 #endregion checkvalue
@@ -909,11 +908,8 @@
                 {
                     var random = new Random();
                     int x = random.Next(2, 3);
-                    if (this.tableWorkers.Count(t => t.IsDirty) > x)
-                    {
-                        this.CleanTable();
-                    }
-                    
+                    int dirtyCount = 0;
+
                     BitmapImage newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\B.bmp", UriKind.Relative));
                     newImage.Freeze();
                     switch (e.TableNumber)
@@ -936,6 +932,54 @@
                         default:
                             break;
                     }
+                    Console.WriteLine("Sprawdzam stan stolików:");
+                    foreach (var tableWorker in tableWorkers)
+                    {
+                        BitmapImage tableImage;
+                        switch (tableWorker.Number)
+                        {
+                            case 1:
+                                tableImage = this.TableImage1;
+                                break;
+                            case 2:
+                                tableImage = this.TableImage2;
+                                break;
+                            case 3:
+                                tableImage = this.TableImage3;
+                                break;
+                            case 4:
+                                tableImage = this.TableImage4;
+                                break;
+                            case 5:
+                                tableImage = this.TableImage5;
+                                break;
+                            default:
+                                tableImage = new BitmapImage();
+                                break;
+                        }
+                        String readLetter = neuralBackProp.ReadLetter(tableImage);
+                        switch (readLetter)
+                        {
+                            case "B":
+                                Console.WriteLine("Stolik nr.{0} jest brudny. {1}", tableWorker.Number, readLetter);
+                                dirtyCount++;
+                                break;
+                            case "Z":
+                                Console.WriteLine("Stolik nr.{0} jest zajęty. {1}", tableWorker.Number, readLetter);
+                                break;
+                            case "W":
+                                Console.WriteLine("Stolik nr.{0} jest wolny. {1}", tableWorker.Number, readLetter);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (dirtyCount > x)
+                    {
+                        this.CleanTable();
+                    }
+
                     Interlocked.Increment(ref reads);
                 }
                 finally
