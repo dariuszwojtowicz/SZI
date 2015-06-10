@@ -349,11 +349,9 @@
                 this.ClientsQueueCount--;
                 foreach (var tableWorker in this.tableWorkers)
                 {
-                    if (tableWorker.IsFree)
+                    if (tableWorker.IsFree && !tableWorker.IsDirty)
                     {
                         tableWorker.IsFree = false;
-
-
 
                         BitmapImage newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
                         newImage.Freeze();
@@ -390,7 +388,36 @@
         {
             foreach (var tableWorker in this.tableWorkers)
             {
-                tableWorker.IsDirty = false;
+                if (tableWorker.IsDirty)
+                {
+                    tableWorker.IsDirty = false;
+                    var actions = this.GoToPoint(tableWorker.X + 1, tableWorker.Y);
+                    this.MoveWaiter(actions);
+
+                    BitmapImage newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\Z.bmp", UriKind.Relative));
+                    newImage.Freeze();
+                    switch (tableWorker.Number)
+                    {
+                        case 1:
+                            this.TableImage1 = newImage;
+                            break;
+                        case 2:
+                            this.TableImage2 = newImage;
+                            break;
+                        case 3:
+                            this.TableImage3 = newImage;
+                            break;
+                        case 4:
+                            this.TableImage4 = newImage;
+                            break;
+                        case 5:
+                            this.TableImage5 = newImage;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                
             }
             this.RefreshInformations();
         }
@@ -639,10 +666,11 @@
                             {
                                 waiterActions = this.GoToPoint(tableWorker.X + 1, tableWorker.Y);
                                 this.MoveWaiter(waiterActions);
+                                tableWorker.Order.OrderState = Order.State.Done;
                                 Debug.WriteLine("Wydaje zamówienie na stolik: " + tableWorker.Number);
+                                i--;
                             }
 
-                            i--;
                             if (i <= 0)
                             {
                                 break;
@@ -732,6 +760,12 @@
                 if (string.IsNullOrEmpty(currentTreeNode.Attribute.ToString()))
                 {
                     return true;
+                }
+
+                if (!this.tableWorkers.Any(t => t.IsFree && !t.IsDirty))
+                {
+
+                    return false;
                 }
 #endregion checkvalue
                 if (currentTreeNode.Attribute.ToString().Trim().ToLower() == "false")
@@ -873,7 +907,35 @@
                 rwl.AcquireReaderLock(100);
                 try
                 {
-                    this.OrdersOnTables--;
+                    var random = new Random();
+                    int x = random.Next(2, 3);
+                    if (this.tableWorkers.Count(t => t.IsDirty) > x)
+                    {
+                        this.CleanTable();
+                    }
+                    
+                    BitmapImage newImage = new BitmapImage(new Uri("..\\..\\Data\\ImageSet\\B.bmp", UriKind.Relative));
+                    newImage.Freeze();
+                    switch (e.TableNumber)
+                    {
+                        case 1:
+                            this.TableImage1 = newImage;
+                            break;
+                        case 2:
+                            this.TableImage2 = newImage;
+                            break;
+                        case 3:
+                            this.TableImage3 = newImage;
+                            break;
+                        case 4:
+                            this.TableImage4 = newImage;
+                            break;
+                        case 5:
+                            this.TableImage5 = newImage;
+                            break;
+                        default:
+                            break;
+                    }
                     Interlocked.Increment(ref reads);
                 }
                 finally

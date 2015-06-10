@@ -57,7 +57,6 @@
         }
 
         public event NewTableOrderEventHandler NewTableOrderEvent;
-
         protected virtual void OnNewTableOrder(NewTableOrderEventArgs e)
         {
             this.NewTableOrderEvent(this, e);
@@ -93,6 +92,7 @@
 
                             this.IsDirty = true;
                             this.IsFree = true;
+
                             this.Order = null;
                             ClientOutEventArgs e = new ClientOutEventArgs(this.X, this.Y, this.Number);
                             this.OnClientOutEvent(e);
